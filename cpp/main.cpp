@@ -6,16 +6,14 @@
 int main() {
     system("chcp 65001 > nul");
 
-//    std::string str{"[2,7,11,15]"};
-
-//    Parse::parseType<const std::vector<int>>()
-
-//    std::cout << std::is_arithmetic_v<const int> << std::endl;
-
     Task1 task1;
     std::cout << task1.title() << std::endl;
 
-    task1.test();
+    std::vector<bool> result = task1.test();
+    std::vector<TestCase> testCase = task1.getTestCase();
+    for (int i = 0; i < result.size(); ++i) {
+        std::cout << testCase[i].input << "\t->\t" << std::boolalpha << result[i] << std::endl;
+    }
 
     return 0;
 }

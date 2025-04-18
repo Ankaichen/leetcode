@@ -16,40 +16,11 @@
 #include <type_traits>
 #include <vector>
 
+#include "parameter_type_traits.hpp"
+
 namespace Parse {
 
     namespace _detail {
-
-        template<typename T>
-        class is_value : public std::is_arithmetic<T> {
-        };
-
-        template<typename T>
-        constexpr bool is_value_v = is_value<T>::value;
-
-        template<typename T>
-        class is_vector : public std::false_type {
-        };
-
-        template<typename T>
-        class is_vector<std::vector<T>> : public std::true_type {
-        public:
-            using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
-        };
-
-        template<typename T>
-        constexpr bool is_vector_v = is_vector<T>::value;
-
-        template<typename T>
-        class is_clean_vector : public is_vector<std::remove_cv_t<std::remove_reference_t<T>>> {
-
-        };
-
-        template<typename T>
-        constexpr bool is_clean_vector_v = is_clean_vector<T>::value;
-
-        template<typename T>
-        using is_vector_value_type = is_vector<T>::value_type;
 
         template<unsigned int Index>
         std::string stringSlice(const std::string &input) {
@@ -95,8 +66,8 @@ namespace Parse {
         }
 
         template<typename T>
-        std::vector<is_vector_value_type<T>> parseVector(const std::string &input) {
-            using result_type = is_vector_value_type<T>;
+        std::vector<TypeTraits::is_vector_value_type<T>> parseVector(const std::string &input) {
+            using result_type = TypeTraits::is_vector_value_type<T>;
             std::vector<result_type> result;
             unsigned int firstIndex = input.find('[') + 1;
             unsigned int lastIndex = input.find_last_of(']');
@@ -131,9 +102,9 @@ namespace Parse {
     template<typename T>
     std::remove_cv_t<std::remove_reference_t<T>> parseType(const std::string &input) {
         using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
-        if constexpr (_detail::is_value_v<ParseType>) {
+        if constexpr (TypeTraits::is_value_v<ParseType>) {
             return _detail::parseValue<ParseType>(input);
-        } else if constexpr (_detail::is_clean_vector_v<ParseType>) {
+        } else if constexpr (TypeTraits::is_removed_vector_v<ParseType>) {
             return _detail::parseVector<ParseType>(input);
         }
     }

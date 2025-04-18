@@ -15,6 +15,7 @@
 #include <functional>
 
 #include "../utils/parse.hpp"
+#include "../utils/compare.hpp"
 
 /**
  * Test case
@@ -66,6 +67,8 @@ public:
      * @param testCaseExpected the expected of test case
      */
     inline void addTestCase(std::string_view testCaseInput, std::string_view testCaseExpected);
+
+    inline const std::vector<TestCase> &getTestCase() const { return this->_testCase; }
 
     /**
      * Use the solve() function to process the test case and return a bool vector,
@@ -122,9 +125,18 @@ inline std::vector<bool> Task<ID, Res(Args...)>::test() const {
     std::for_each(
             this->_testCase.cbegin(), this->_testCase.cend(),
             [this, &testResult, index](const TestCase &testCase) mutable -> void {
-                Res resValue = this->parseArgsAndSolve(testCase.input);
+                Res resValue{};
+                try {
+                    resValue = this->parseArgsAndSolve(testCase.input);
+                } catch (const std::exception &e) {
+                    std::cerr << "An error occurred in the test case:" << std::endl
+                              << "\t" << testCase.input << std::endl
+                              << "\t" << e.what() << std::endl;
+                    exit(-1);
+                }
                 Res expectedValue = Parse::parseType<Res>(testCase.expected);
-                // TODO 判断 resValue 与 expectedValue 是否相同
+                bool result = Compare::compare(resValue, expectedValue);
+                testResult[index++] = result;
             });
     return testResult;
 }
