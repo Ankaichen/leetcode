@@ -11,6 +11,7 @@
 #ifndef LEETCODE_PARSE_HPP
 #define LEETCODE_PARSE_HPP
 
+#include <ranges>
 #include <string>
 #include <sstream>
 #include <type_traits>
@@ -91,6 +92,17 @@ namespace Parse {
             return result;
         }
 
+        ListNode *parseListNode(const std::string &input) {
+            using ValType = decltype(std::declval<ListNode>().val);
+            std::vector<ValType> vec = parseVector<std::vector<ValType>>(input);
+            ListNode *p = nullptr, *q = nullptr;
+            for (int i : std::ranges::reverse_view(vec)) {
+                q = new ListNode(i, p);
+                p = q;
+            }
+            return p;
+        }
+
     }
 
     /**
@@ -106,6 +118,8 @@ namespace Parse {
             return _detail::parseValue<ParseType>(input);
         } else if constexpr (TypeTraits::is_removed_vector_v<ParseType>) {
             return _detail::parseVector<ParseType>(input);
+        } else if constexpr (std::is_same_v<ParseType, ListNode*>) {
+            return _detail::parseListNode(input);
         }
     }
 
@@ -142,8 +156,15 @@ namespace Parse {
             }
             ss << "]";
             return ss.str();
-        } else {
-            return "";
+        } else if constexpr (std::is_same_v<ParseType, ListNode*>) {
+            using ValType = decltype(std::declval<ListNode>().val);
+            ListNode *p = value;
+            std::vector<ValType> vec;
+            while (p != nullptr) {
+                vec.push_back(p->val);
+                p = p->next;
+            }
+            return toString(vec);
         }
     }
 

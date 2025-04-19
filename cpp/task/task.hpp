@@ -16,6 +16,8 @@
 
 #include "../utils/parse.hpp"
 #include "../utils/compare.hpp"
+#include "../utils/delete.hpp"
+#include "forward_declaration.h"
 
 /**
  * Test case
@@ -151,6 +153,8 @@ inline std::vector<TestResult> Task<ID, Res(Args...)>::test() const {
                 unsigned int curI = index++;
                 testResult[curI].flag = resultFlag;
                 testResult[curI].output = Parse::toString<Res>(resValue);
+                Delete::deleteValue(resValue);
+                Delete::deleteValue(expectedValue);
             });
     return testResult;
 }
