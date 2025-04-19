@@ -35,8 +35,6 @@ Task1::Task1() {
     this->addTestCase("nums = [3, 3]; target = 6", "[1]");
 }
 
-#include <cassert>
-
 std::vector<int> Task1::solve(const std::vector<int> &nums, int target) const {
     int n = static_cast<int>(nums.size());
     for (int i = 0; i < n; ++i) {
