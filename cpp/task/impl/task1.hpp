@@ -21,7 +21,7 @@ public:
 
     ~Task1() noexcept override = default;
 
-    std::string title() override {
+    [[nodiscard]] std::string title() const override  {
         return "两数之和";
     }
 
@@ -30,6 +30,9 @@ public:
 
 Task1::Task1() {
     this->addTestCase("nums = [2,7,11,15]; target = 9", "[0,1]");
+    this->addTestCase("nums = [3,2,4]; target = 6", "[1,2]");
+    this->addTestCase("nums = [3, 3]; target = 6", "[0,1]");
+    this->addTestCase("nums = [3, 3]; target = 6", "[1]");
 }
 
 #include <cassert>

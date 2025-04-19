@@ -14,6 +14,8 @@
 #include <vector>
 #include <type_traits>
 
+#include "../task/forward_declaration.h"
+
 namespace TypeTraits {
 
     template<typename T>
@@ -58,6 +60,24 @@ namespace TypeTraits {
 
     template<typename T>
     inline constexpr bool is_container_v = is_container<T>::value;
+
+    template<typename T>
+    struct is_base_task : std::false_type {
+    };
+
+    template<unsigned int ID, typename Res, typename... Args>
+    struct is_base_task<Task<ID, Res(Args...)>> : std::true_type {
+    };
+
+    template<typename T>
+    inline constexpr bool is_base_task_v = is_base_task<T>::value;
+
+    template<typename T>
+    struct is_task : public std::conjunction<is_base_task<typename T::BaseType>, std::negation<std::is_abstract<T>>> {
+    };
+
+    template<typename T>
+    inline constexpr bool is_task_v = is_task<T>::value;
 }
 
 #endif //LEETCODE_PARAMETER_TYPE_TRAITS_HPP

@@ -47,6 +47,8 @@ template<unsigned int ID, typename Res, typename... Args>
 class Task<ID, Res(Args...)> {
 
 public:
+    using BaseType = Task<ID, Res(Args...)>;
+
     Task() = default;
 
     Task(const Task<ID, Res(Args...)> &problem) = delete;
@@ -59,7 +61,7 @@ public:
      * Get the task title
      * @return the task title
      */
-    virtual inline std::string title() = 0;
+    [[nodiscard]] virtual inline std::string title() const = 0;
 
     /**
      * Add a test case
@@ -68,7 +70,7 @@ public:
      */
     inline void addTestCase(std::string_view testCaseInput, std::string_view testCaseExpected);
 
-    inline const std::vector<TestCase> &getTestCase() const { return this->_testCase; }
+    [[nodiscard]] inline const std::vector<TestCase> &getTestCase() const { return this->_testCase; }
 
     /**
      * Use the solve() function to process the test case and return a bool vector,
