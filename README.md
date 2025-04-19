@@ -4,4 +4,4 @@ The C++ version is based on template metaprogramming. It introduces leetcode pro
 
 Example
 
-![image-20250419174050940](D:\Work Space\leetcode\assets\image-20250419174050940.png)
+![image-20250419211906077](D:\Work Space\leetcode\assets\image-20250419211906077.png)
