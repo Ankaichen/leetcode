@@ -23,6 +23,10 @@
 #include "../color_out/color_out.h"
 #include "../utils/parameter_type_traits.hpp"
 
+/**
+ * Used to run tasks and output results
+ * @tparam T task class
+ */
 template<typename T>
 class TaskRunner {
     static_assert(TypeTraits::is_task_v<T>);
