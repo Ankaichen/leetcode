@@ -123,6 +123,29 @@ namespace Parse {
         return parseType<ParseType>(slicedString);
     }
 
+    template<typename T>
+    std::string toString(const T &value) {
+        using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
+        if constexpr (std::is_same_v<ParseType, char>) {
+            return std::string{static_cast<char>(value)};
+        } else if constexpr (std::is_arithmetic_v<ParseType>) {
+            return std::to_string(value);
+        } else if constexpr (TypeTraits::is_container_v<ParseType>) {
+            std::stringstream ss;
+            ss << "[";
+            auto i = value.cbegin();
+            if (i != value.cend()) {
+                ss << (*i);
+                for (++i; i != value.cend(); ++i) {
+                    ss << "," << toString(*i);
+                }
+            }
+            ss << "]";
+            return ss.str();
+        } else {
+            return "";
+        }
+    }
 
 };
 

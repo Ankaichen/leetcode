@@ -28,7 +28,7 @@ class TaskRunner {
     static_assert(TypeTraits::is_task_v<T>);
 private:
     struct TableItem {
-        const ColorOut::TextStyle &color;
+        ColorOut::TextStyle color;
         std::string value;
     };
 public:
@@ -45,7 +45,7 @@ public:
 private:
     TaskRunner() { system("chcp 65001 > nul"); };
 
-    inline std::vector<std::vector<TableItem>> createTableData(const std::vector<bool> &runResult) const;
+    inline std::vector<std::vector<TableItem>> createTableData(const std::vector<TestResult> &runResult) const;
 
     static inline std::vector<std::size_t>
     calculateColumnWidth(const std::vector<std::vector<TableItem>> &table, size_t padding = 1);
@@ -70,14 +70,14 @@ const TaskRunner<T> &TaskRunner<T>::getInstance() {
 template<typename T>
 void TaskRunner<T>::run() const {
     std::cout << this->task.id << ". " << this->task.title() << std::endl;
-    std::vector<bool> result = this->task.test();
+    std::vector<TestResult> result = this->task.test();
     std::vector<std::vector<TableItem>> table = this->createTableData(result);
     printTable(table, ColorOut::white_fg);
 }
 
 template<typename T>
 std::vector<std::vector<typename TaskRunner<T>::TableItem>>
-TaskRunner<T>::createTableData(const std::vector<bool> &runResult) const {
+TaskRunner<T>::createTableData(const std::vector<TestResult> &runResult) const {
     const std::vector<TestCase> &testCase = this->task.getTestCase();
     assert(testCase.size() == runResult.size());
     std::vector<std::vector<TableItem>> table;
@@ -85,29 +85,36 @@ TaskRunner<T>::createTableData(const std::vector<bool> &runResult) const {
     // id
     column.emplace_back(ColorOut::default_fg, "Id");
     for (unsigned int i = 0; i < runResult.size(); ++i) {
-        const auto &c = runResult[i] ? ColorOut::green_fg : ColorOut::red_fg;
+        const auto &c = runResult[i].flag ? ColorOut::green_fg : ColorOut::red_fg;
         column.emplace_back(c, std::to_string(i + 1));
     }
     table.emplace_back(std::move(column));
     // test case input
     column.emplace_back(ColorOut::default_fg, "Input");
     for (unsigned int i = 0; i < runResult.size(); ++i) {
-        const auto &c = runResult[i] ? ColorOut::green_fg : ColorOut::red_fg;
+        const auto &c = runResult[i].flag ? ColorOut::green_fg : ColorOut::red_fg;
         column.emplace_back(c, testCase[i].input);
     }
     table.emplace_back(std::move(column));
     // test case expected
-    column.emplace_back(ColorOut::default_fg, "Expected");
+    column.emplace_back(ColorOut::default_fg, "Expected Output");
     for (unsigned int i = 0; i < runResult.size(); ++i) {
-        const auto &c = runResult[i] ? ColorOut::green_fg : ColorOut::red_fg;
+        const auto &c = runResult[i].flag ? ColorOut::green_fg : ColorOut::red_fg;
         column.emplace_back(c, testCase[i].expected);
+    }
+    table.emplace_back(std::move(column));
+    // test case actual output
+    column.emplace_back(ColorOut::default_fg, "Actual Output");
+    for (const auto & i : runResult) {
+        const auto &c = i.flag ? ColorOut::green_fg : ColorOut::red_fg;
+        column.emplace_back(c, i.output);
     }
     table.emplace_back(std::move(column));
     // status
     column.emplace_back(ColorOut::default_fg, "Status");
-    for (bool i: runResult) {
-        const auto &c = i ? ColorOut::green_fg : ColorOut::red_fg;
-        column.emplace_back(c, i ? "Pass" : "Failed");
+    for (const auto &i: runResult) {
+        const auto &c = i.flag ? ColorOut::green_fg : ColorOut::red_fg;
+        column.emplace_back(c, i.flag ? "Pass" : "Failed");
     }
     table.emplace_back(std::move(column));
     return table;

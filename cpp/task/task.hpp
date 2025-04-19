@@ -30,6 +30,16 @@ struct TestCase {
 };
 
 /**
+ * Test result
+ * flag:   whether the result is true
+ * output: the output result
+ */
+struct TestResult {
+    bool flag;
+    std::string output;
+};
+
+/**
  * Task template class
  * @tparam ID   the task number
  * @tparam Func the task function type
@@ -77,7 +87,7 @@ public:
      * to indicate whether each test case passes
      * @return bool vector
      */
-    [[nodiscard]] inline std::vector<bool> test() const;
+    [[nodiscard]] inline std::vector<TestResult> test() const;
 
     /**
      * Location of algorithm implementation, override by derived class
@@ -121,8 +131,8 @@ inline void Task<ID, Res(Args...)>::addTestCase(std::string_view testCaseInput, 
 }
 
 template<unsigned int ID, typename Res, typename... Args>
-inline std::vector<bool> Task<ID, Res(Args...)>::test() const {
-    std::vector<bool> testResult(this->_testCase.size(), false);
+inline std::vector<TestResult> Task<ID, Res(Args...)>::test() const {
+    std::vector<TestResult> testResult(this->_testCase.size());
     unsigned int index = 0;
     std::for_each(
             this->_testCase.cbegin(), this->_testCase.cend(),
@@ -137,8 +147,10 @@ inline std::vector<bool> Task<ID, Res(Args...)>::test() const {
                     exit(-1);
                 }
                 Res expectedValue = Parse::parseType<Res>(testCase.expected);
-                bool result = Compare::compare(resValue, expectedValue);
-                testResult[index++] = result;
+                bool resultFlag = Compare::compare(resValue, expectedValue);
+                unsigned int curI = index++;
+                testResult[curI].flag = resultFlag;
+                testResult[curI].output = Parse::toString<Res>(resValue);
             });
     return testResult;
 }
