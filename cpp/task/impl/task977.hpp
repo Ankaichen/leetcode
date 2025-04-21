@@ -35,7 +35,7 @@ std::vector<int> sortedSquares1(const std::vector<int> &nums) {
     std::vector<int> result_vec(nums.size(), 0);
     auto mid = nums.cbegin();
     for (; mid != nums.cend() && *mid < 0; ++mid);
-    auto rmid = std::reverse_iterator(mid);
+    auto rmid = std::reverse_iterator(mid); // reverse_iterator 与 iterator 之间差一个元素 rmid指向的是mid的前一个位置
     auto res = result_vec.begin();
     while (mid != nums.cend() && rmid != nums.crend()) {
         if (*mid > -(*rmid)) {
