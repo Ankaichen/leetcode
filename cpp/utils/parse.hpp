@@ -16,10 +16,14 @@
 #include <sstream>
 #include <type_traits>
 #include <vector>
+#include <stack>
 
 #include "parameter_type_traits.hpp"
 
 namespace Parse {
+
+    template<typename T>
+    std::remove_cv_t<std::remove_reference_t<T>> parseType(const std::string &input);
 
     namespace _detail {
 
@@ -73,21 +77,33 @@ namespace Parse {
             unsigned int firstIndex = input.find('[') + 1;
             unsigned int lastIndex = input.find_last_of(']');
             std::stringstream ss{""};
+            std::stack<char> charStack{};
             for (unsigned int i = firstIndex; i < lastIndex; ++i) {
                 char c = input[i];
-                if (c == ',') {
-                    std::string curValue{ss.str()};
-                    if (!curValue.empty()) {
-                        result.push_back(parseValue<result_type>(curValue));
+                if (c == '[') {
+                    charStack.push(c);
+                    ss << c;
+                } else if (c == ']') {
+                    assert(charStack.top() == '[');
+                    ss << c;
+                    charStack.pop();
+                } else if (c == ',') {
+                    if (charStack.empty()) {
+                        std::string curValue{ss.str()};
+                        if (!curValue.empty()) {
+                            result.push_back(parseType<result_type>(curValue));
+                        }
+                        { decltype(ss) temp = std::move(ss); }
+                    } else {
+                        ss << c;
                     }
-                    { decltype(ss) temp = std::move(ss); }
                 } else {
                     ss << c;
                 }
             }
             std::string lastValue{ss.str()};
             if (!lastValue.empty()) {
-                result.push_back(parseValue<result_type>(lastValue));
+                result.push_back(parseType<result_type>(lastValue));
             }
             return result;
         }
@@ -96,7 +112,7 @@ namespace Parse {
             using ValType = decltype(std::declval<ListNode>().val);
             std::vector<ValType> vec = parseVector<std::vector<ValType>>(input);
             ListNode *p = nullptr, *q = nullptr;
-            for (int i : std::ranges::reverse_view(vec)) {
+            for (int i: std::ranges::reverse_view(vec)) {
                 q = new ListNode(i, p);
                 p = q;
             }
@@ -118,7 +134,7 @@ namespace Parse {
             return _detail::parseValue<ParseType>(input);
         } else if constexpr (TypeTraits::is_removed_vector_v<ParseType>) {
             return _detail::parseVector<ParseType>(input);
-        } else if constexpr (std::is_same_v<ParseType, ListNode*>) {
+        } else if constexpr (std::is_same_v<ParseType, ListNode *>) {
             return _detail::parseListNode(input);
         }
     }
@@ -149,14 +165,14 @@ namespace Parse {
             ss << "[";
             auto i = value.cbegin();
             if (i != value.cend()) {
-                ss << (*i);
+                ss << toString(*i);
                 for (++i; i != value.cend(); ++i) {
                     ss << "," << toString(*i);
                 }
             }
             ss << "]";
             return ss.str();
-        } else if constexpr (std::is_same_v<ParseType, ListNode*>) {
+        } else if constexpr (std::is_same_v<ParseType, ListNode *>) {
             using ValType = decltype(std::declval<ListNode>().val);
             ListNode *p = value;
             std::vector<ValType> vec;
