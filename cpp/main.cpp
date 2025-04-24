@@ -6,12 +6,15 @@
 #include "task/impl/task27.hpp"
 #include "task/impl/task59.hpp"
 #include "task/impl/task142.hpp"
+#include "task/impl/task202.hpp"
 #include "task/impl/task203.hpp"
 #include "task/impl/task206.hpp"
 #include "task/impl/task209.hpp"
 #include "task/impl/task242.hpp"
 #include "task/impl/task349.hpp"
+#include "task/impl/task383.hpp"
+#include "task/impl/task454.hpp"
 #include "task/impl/task704.hpp"
 #include "task/impl/task977.hpp"
 
-TASK_MAIN(Task349)
+TASK_MAIN(Task383)
