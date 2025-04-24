@@ -12,18 +12,15 @@
 #define LEETCODE_PARAMETER_TYPE_TRAITS_HPP
 
 #include <vector>
+#include <map>
+#include <unordered_map>
+#include <set>
+#include <unordered_set>
 #include <type_traits>
 
 #include "../task/forward_declaration.h"
 
 namespace TypeTraits {
-
-    template<typename T>
-    class is_value : public std::is_arithmetic<T> {
-    };
-
-    template<typename T>
-    constexpr bool is_value_v = is_value<T>::value;
 
     template<typename T>
     class is_vector : public std::false_type {
@@ -39,15 +36,29 @@ namespace TypeTraits {
     constexpr bool is_vector_v = is_vector<T>::value;
 
     template<typename T>
-    class is_removed_vector : public is_vector<std::remove_cv_t<std::remove_reference_t<T>>> {
+    using vector_value_t = is_vector<T>::value_type;
 
+    template<typename T>
+    struct is_set : public std::false_type {
     };
 
     template<typename T>
-    constexpr bool is_removed_vector_v = is_removed_vector<T>::value;
+    struct is_set<std::set<T>> : public std::true_type {
+    public:
+        using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
+    };
 
     template<typename T>
-    using is_vector_value_type = is_vector<T>::value_type;
+    struct is_set<std::unordered_set<T>> : public std::true_type {
+    public:
+        using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
+    };
+
+    template<typename T>
+    constexpr bool is_set_v = is_set<T>::value;
+
+    template<typename T>
+    using set_value_t = is_set<T>::value_type;
 
     template<typename T, typename = void>
     struct is_container : std::false_type {

@@ -16,6 +16,8 @@
 #include <sstream>
 #include <type_traits>
 #include <vector>
+#include <set>
+#include <unordered_set>
 #include <stack>
 
 #include "parameter_type_traits.hpp"
@@ -65,14 +67,17 @@ namespace Parse {
                 return std::stof(input);
             } else if constexpr (std::is_same_v<T, double>) {
                 return std::stod(input);
+            } else if constexpr (std::is_same_v<T, bool>) {
+                if (input == "true") return true;
+                else return false;
             } else {
                 static_assert(false);
             }
         }
 
         template<typename T>
-        std::vector<TypeTraits::is_vector_value_type<T>> parseVector(const std::string &input) {
-            using result_type = TypeTraits::is_vector_value_type<T>;
+        std::vector<TypeTraits::vector_value_t<T>> parseVector(const std::string &input) {
+            using result_type = TypeTraits::vector_value_t<T>;
             std::vector<result_type> result;
             unsigned int firstIndex = input.find('[') + 1;
             unsigned int lastIndex = input.find_last_of(']');
@@ -119,6 +124,63 @@ namespace Parse {
             return p;
         }
 
+
+        template<typename T>
+        std::set<TypeTraits::set_value_t<T>> parseSet(const std::string &input) {
+            using result_type = TypeTraits::set_value_t<T>;
+            std::set<result_type> result;
+            unsigned int firstIndex = input.find('{') + 1;
+            unsigned int lastIndex = input.find_last_of('}');
+            std::stringstream ss{""};
+            std::stack<char> charStack{};
+            for (unsigned int i = firstIndex; i < lastIndex; ++i) {
+                char c = input[i];
+                if (c == '[') {
+                    charStack.push(c);
+                    ss << c;
+                } else if (c == ']') {
+                    assert(charStack.top() == '[');
+                    ss << c;
+                    charStack.pop();
+                } else if (c == ',') {
+                    if (charStack.empty()) {
+                        std::string curValue{ss.str()};
+                        if (!curValue.empty()) {
+                            result.insert(parseType<result_type>(curValue));
+                        }
+                        { decltype(ss) temp = std::move(ss); }
+                    } else {
+                        ss << c;
+                    }
+                } else {
+                    ss << c;
+                }
+            }
+            std::string lastValue{ss.str()};
+            if (!lastValue.empty()) {
+                result.insert(parseType<result_type>(lastValue));
+            }
+            return result;
+        }
+
+        std::string parseString(const std::string &input) {
+            unsigned int firstIndex = input.find('"') + 1;
+            unsigned int lastIndex = input.find_last_of('"');
+            return input.substr(firstIndex, lastIndex - firstIndex);
+        }
+
+        template<typename T>
+        std::remove_cv_t<std::remove_reference_t<T>> parseContainer(const std::string &input) {
+            using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
+            if constexpr (TypeTraits::is_vector_v<ParseType>) {
+                return parseVector<ParseType>(input);
+            } else if constexpr (TypeTraits::is_set_v<ParseType>) {
+                return parseSet<ParseType>(input);
+            } else if constexpr (std::is_same_v<ParseType, std::string>) {
+                return input;
+            }
+        }
+
     }
 
     /**
@@ -130,10 +192,10 @@ namespace Parse {
     template<typename T>
     std::remove_cv_t<std::remove_reference_t<T>> parseType(const std::string &input) {
         using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
-        if constexpr (TypeTraits::is_value_v<ParseType>) {
+        if constexpr (std::is_arithmetic_v<ParseType>) {
             return _detail::parseValue<ParseType>(input);
-        } else if constexpr (TypeTraits::is_removed_vector_v<ParseType>) {
-            return _detail::parseVector<ParseType>(input);
+        } else if constexpr (TypeTraits::is_container_v<ParseType>) {
+            return _detail::parseContainer<ParseType>(input);
         } else if constexpr (std::is_same_v<ParseType, ListNode *>) {
             return _detail::parseListNode(input);
         }
@@ -158,11 +220,20 @@ namespace Parse {
         using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
         if constexpr (std::is_same_v<ParseType, char>) {
             return std::string{static_cast<char>(value)};
+        } else if constexpr (std::is_same_v<ParseType, bool>) {
+            std::stringstream ss;
+            ss << std::boolalpha << value;
+            return ss.str();
         } else if constexpr (std::is_arithmetic_v<ParseType>) {
             return std::to_string(value);
         } else if constexpr (TypeTraits::is_container_v<ParseType>) {
+            std::string rng1 = "[", rng2 = "]";
+            if constexpr (TypeTraits::is_set_v<ParseType>) {
+                rng1 = "{";
+                rng2 = "}";
+            }
             std::stringstream ss;
-            ss << "[";
+            ss << rng1;
             auto i = value.cbegin();
             if (i != value.cend()) {
                 ss << toString(*i);
@@ -170,7 +241,7 @@ namespace Parse {
                     ss << "," << toString(*i);
                 }
             }
-            ss << "]";
+            ss << rng2;
             return ss.str();
         } else if constexpr (std::is_same_v<ParseType, ListNode *>) {
             using ValType = decltype(std::declval<ListNode>().val);
