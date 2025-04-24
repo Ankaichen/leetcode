@@ -9,7 +9,9 @@
 #include "task/impl/task203.hpp"
 #include "task/impl/task206.hpp"
 #include "task/impl/task209.hpp"
+#include "task/impl/task242.hpp"
+#include "task/impl/task349.hpp"
 #include "task/impl/task704.hpp"
 #include "task/impl/task977.hpp"
 
-TASK_MAIN(Task142)
+TASK_MAIN(Task349)
