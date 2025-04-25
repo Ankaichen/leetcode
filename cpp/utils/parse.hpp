@@ -126,20 +126,20 @@ namespace Parse {
 
 
         template<typename T>
-        std::set<TypeTraits::set_value_t<T>> parseSet(const std::string &input) {
+        T parseSet(const std::string &input) {
             using result_type = TypeTraits::set_value_t<T>;
-            std::set<result_type> result;
+            T result;
             unsigned int firstIndex = input.find('{') + 1;
             unsigned int lastIndex = input.find_last_of('}');
             std::stringstream ss{""};
             std::stack<char> charStack{};
             for (unsigned int i = firstIndex; i < lastIndex; ++i) {
                 char c = input[i];
-                if (c == '[') {
+                if (c == '[' || c == '{') {
                     charStack.push(c);
                     ss << c;
-                } else if (c == ']') {
-                    assert(charStack.top() == '[');
+                } else if (c == ']' || c == '}') {
+                    assert(charStack.top() == '[' || charStack.top() == '{');
                     ss << c;
                     charStack.pop();
                 } else if (c == ',') {

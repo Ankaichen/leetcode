@@ -55,6 +55,18 @@ namespace TypeTraits {
     };
 
     template<typename T>
+    struct is_set<std::multiset<T>> : public std::true_type {
+    public:
+        using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
+    };
+
+    template<typename T>
+    struct is_set<std::unordered_multiset<T>> : public std::true_type {
+    public:
+        using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
+    };
+
+    template<typename T>
     constexpr bool is_set_v = is_set<T>::value;
 
     template<typename T>
