@@ -50,8 +50,11 @@ namespace Parse {
 
         template<typename T>
         T parseValue(const std::string &input) {
-            // TODO parse char
-            if constexpr (std::is_same_v<T, int>) {
+            if constexpr (std::is_same_v<T, char>) {
+                return input[0];
+            } else if constexpr (std::is_same_v<T, unsigned char>) {
+                return static_cast<unsigned char>(std::stoi(input));
+            } else if constexpr (std::is_same_v<T, int>) {
                 return std::stoi(input);
             } else if constexpr (std::is_same_v<T, long>) {
                 return std::stol(input);
@@ -172,12 +175,12 @@ namespace Parse {
         template<typename T>
         std::remove_cv_t<std::remove_reference_t<T>> parseContainer(const std::string &input) {
             using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
-            if constexpr (TypeTraits::is_vector_v<ParseType>) {
+            if constexpr (std::is_same_v<ParseType, std::string>) {
+                return parseString(input);
+            } else if constexpr (TypeTraits::is_vector_v<ParseType>) {
                 return parseVector<ParseType>(input);
             } else if constexpr (TypeTraits::is_set_v<ParseType>) {
                 return parseSet<ParseType>(input);
-            } else if constexpr (std::is_same_v<ParseType, std::string>) {
-                return input;
             }
         }
 
@@ -227,6 +230,9 @@ namespace Parse {
         } else if constexpr (std::is_arithmetic_v<ParseType>) {
             return std::to_string(value);
         } else if constexpr (TypeTraits::is_container_v<ParseType>) {
+            if constexpr (std::is_same_v<ParseType, std::string>) {
+                return "\"" + value + "\"";
+            }
             std::string rng1 = "[", rng2 = "]";
             if constexpr (TypeTraits::is_set_v<ParseType>) {
                 rng1 = "{";
