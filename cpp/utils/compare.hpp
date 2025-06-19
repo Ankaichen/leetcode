@@ -24,24 +24,24 @@ namespace Compare {
     namespace _detail {
 
         template<typename T>
-        bool compareIntegral(T value1, T value2) {
+        static bool compareIntegral(T value1, T value2) {
             static_assert(std::is_integral_v<T>);
             return value1 == value2;
         }
 
         template<typename T>
-        bool compareFloatingPoint(T value1, T value2, T epsilon = 1e-6) {
+        static bool compareFloatingPoint(T value1, T value2, T epsilon = 1e-6) {
             static_assert(std::is_floating_point_v<T>);
             return std::fabs(value1 - value2) < epsilon;
         }
 
         template<typename T>
-        bool compareContainer(const T &value1, const T &value2) {
+        static bool compareContainer(const T &value1, const T &value2) {
             static_assert(TypeTraits::is_container_v<T>);
             return std::equal(value1.cbegin(), value1.cend(), value2.cbegin(), value2.cend());
         }
 
-        bool compareListNode(ListNode *value1, ListNode *value2) {
+        static bool compareListNode(ListNode *value1, ListNode *value2) {
             using ValType = decltype(std::declval<ListNode>().val);
             while (value1 != nullptr && value2 != nullptr) {
                 if (value1->val != value2->val) return false;
@@ -53,7 +53,7 @@ namespace Compare {
     }
 
     template<typename T>
-    bool compare(const T &value1, const T &value2) {
+    static bool compare(const T &value1, const T &value2) {
         using CompareType = std::remove_cv_t<std::remove_reference_t<T>>;
         if constexpr (std::is_integral_v<CompareType>) {
             return _detail::compareIntegral(value1, value2);

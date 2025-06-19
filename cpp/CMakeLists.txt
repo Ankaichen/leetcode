@@ -7,17 +7,21 @@ project(leetcode
 
 set(CMAKE_CXX_STANDARD 20)
 
+add_subdirectory(tasks)
+
 add_executable(leetcode main.cpp)
 
-if (MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE
-            $<$<CONFIG:Debug>:/Od>       # Disable optimization
-            $<$<CONFIG:Release>:/O2>     # Optimize for speed
-    )
-else ()
-    target_compile_options(${PROJECT_NAME} PRIVATE
-            $<$<CONFIG:Debug>:-O0 -g>    # No optimization, include debug symbols
-            $<$<CONFIG:Release>:-O3>     # High optimization level
-    )
-endif ()
+target_link_libraries(leetcode tasksLib)
+
+#if (MSVC)
+#    target_compile_options(${PROJECT_NAME} PRIVATE
+#            $<$<CONFIG:Debug>:/Od>       # Disable optimization
+#            $<$<CONFIG:Release>:/O2>     # Optimize for speed
+#    )
+#else ()
+#    target_compile_options(${PROJECT_NAME} PRIVATE
+#            $<$<CONFIG:Debug>:-O0 -g>    # No optimization, include debug symbols
+#            $<$<CONFIG:Release>:-O3>     # High optimization level
+#    )
+#endif ()
 

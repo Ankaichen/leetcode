@@ -19,6 +19,7 @@
 #include <set>
 #include <unordered_set>
 #include <stack>
+#include <cassert>
 
 #include "parameter_type_traits.hpp"
 
@@ -30,7 +31,7 @@ namespace Parse {
     namespace _detail {
 
         template<unsigned int Index>
-        std::string stringSlice(const std::string &input) {
+        static std::string stringSlice(const std::string &input) {
             int sliceIndex{-1};
             unsigned int i{0}, startIndex1{0};
             for (; i < input.size(); ++i) {
@@ -49,7 +50,7 @@ namespace Parse {
         }
 
         template<typename T>
-        T parseValue(const std::string &input) {
+        static T parseValue(const std::string &input) {
             if constexpr (std::is_same_v<T, char>) {
                 return input[0];
             } else if constexpr (std::is_same_v<T, unsigned char>) {
@@ -79,7 +80,7 @@ namespace Parse {
         }
 
         template<typename T>
-        std::vector<TypeTraits::vector_value_t<T>> parseVector(const std::string &input) {
+        static std::vector<TypeTraits::vector_value_t<T>> parseVector(const std::string &input) {
             using result_type = TypeTraits::vector_value_t<T>;
             std::vector<result_type> result;
             unsigned int firstIndex = input.find('[') + 1;
@@ -116,7 +117,7 @@ namespace Parse {
             return result;
         }
 
-        ListNode *parseListNode(const std::string &input) {
+        static ListNode *parseListNode(const std::string &input) {
             using ValType = decltype(std::declval<ListNode>().val);
             std::vector<ValType> vec = parseVector<std::vector<ValType>>(input);
             ListNode *p = nullptr, *q = nullptr;
@@ -129,7 +130,7 @@ namespace Parse {
 
 
         template<typename T>
-        T parseSet(const std::string &input) {
+        static T parseSet(const std::string &input) {
             using result_type = TypeTraits::set_value_t<T>;
             T result;
             unsigned int firstIndex = input.find('{') + 1;
@@ -166,14 +167,14 @@ namespace Parse {
             return result;
         }
 
-        std::string parseString(const std::string &input) {
+        static std::string parseString(const std::string &input) {
             unsigned int firstIndex = input.find('"') + 1;
             unsigned int lastIndex = input.find_last_of('"');
             return input.substr(firstIndex, lastIndex - firstIndex);
         }
 
         template<typename T>
-        std::remove_cv_t<std::remove_reference_t<T>> parseContainer(const std::string &input) {
+        static std::remove_cv_t<std::remove_reference_t<T>> parseContainer(const std::string &input) {
             using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
             if constexpr (std::is_same_v<ParseType, std::string>) {
                 return parseString(input);
@@ -193,7 +194,7 @@ namespace Parse {
      * @return      parameter value
      */
     template<typename T>
-    std::remove_cv_t<std::remove_reference_t<T>> parseType(const std::string &input) {
+    static std::remove_cv_t<std::remove_reference_t<T>> parseType(const std::string &input) {
         using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
         if constexpr (std::is_arithmetic_v<ParseType>) {
             return _detail::parseValue<ParseType>(input);
@@ -212,14 +213,14 @@ namespace Parse {
      * @return       parameter value
      */
     template<unsigned int Index, typename T>
-    std::remove_cv_t<std::remove_reference_t<T>> parseTypeByIndex(const std::string &input) {
+    static std::remove_cv_t<std::remove_reference_t<T>> parseTypeByIndex(const std::string &input) {
         using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
         std::string slicedString = _detail::stringSlice<Index>(input);
         return parseType<ParseType>(slicedString);
     }
 
     template<typename T>
-    std::string toString(const T &value) {
+    static std::string toString(const T &value) {
         using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
         if constexpr (std::is_same_v<ParseType, char>) {
             return std::string{static_cast<char>(value)};
