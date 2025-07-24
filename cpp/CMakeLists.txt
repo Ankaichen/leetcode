@@ -7,6 +7,14 @@ project(leetcode
 
 set(CMAKE_CXX_STANDARD 20)
 
+if (WIN32)
+    add_definitions(-DPLATFORM_WINDOWS)
+elseif (APPLE)
+    add_definitions(-DPLATFORM_MAC)
+elseif (LINUX)
+    add_definitions(-DPLATFORM_LINUX)
+endif ()
+
 add_subdirectory(tasks)
 
 add_executable(leetcode main.cpp)

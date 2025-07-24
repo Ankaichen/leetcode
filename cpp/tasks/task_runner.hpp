@@ -47,7 +47,11 @@ public:
     inline void run() const;
 
 private:
-    TaskRunner() { system("chcp 65001 > nul"); };
+    TaskRunner() {
+#ifdef PLATFORM_WINDOWS
+        system("chcp 65001 > nul");
+#endif
+    };
 
     inline std::vector<std::vector<TableItem>> createTableData(const std::vector<TestResult> &runResult) const;
 
