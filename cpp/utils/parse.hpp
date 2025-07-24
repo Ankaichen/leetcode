@@ -26,7 +26,7 @@
 namespace Parse {
 
     template<typename T>
-    std::remove_cv_t<std::remove_reference_t<T>> parseType(const std::string &input);
+    static std::remove_cv_t<std::remove_reference_t<T>> parseType(const std::string &input);
 
     namespace _detail {
 
