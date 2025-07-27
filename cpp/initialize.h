@@ -11,7 +11,7 @@
 #ifndef LEETCODE_INITIALIZE_H
 #define LEETCODE_INITIALIZE_H
 
-#include "tasks/task_runner.hpp"
+#include "tasks/core/task_runner.hpp"
 
 template<typename... Tasks>
 void runTasks() {
