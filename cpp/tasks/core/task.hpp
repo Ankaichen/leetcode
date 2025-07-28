@@ -43,24 +43,16 @@ struct TestResult {
 };
 
 /**
- * Task template class
- * @tparam ID   the task number
- * @tparam Func the task function type
- */
-template<unsigned int ID, typename Func>
-class Task;
-
-/**
  * Task template base class
  * @tparam ID   the task number
  * @tparam Res  the task function return type
  * @tparam Args the task function parameter type pack
  */
-template<unsigned int ID, typename Res, typename... Args>
-class Task<ID, Res(Args...)> {
+template<const char *NAME, typename Res, typename... Args>
+class Task<NAME, Res(Args...)> {
 
 public:
-    using BaseType = Task<ID, Res(Args...)>;
+    using BaseType = Task<NAME, Res(Args...)>;
 
     Task() = default;
 
@@ -74,7 +66,7 @@ public:
      * Get the task title
      * @return the task title
      */
-    [[nodiscard]] virtual inline std::string title() const = 0;
+    [[nodiscard]] inline std::string title() const { return std::string{NAME}; };
 
     /**
      * Add a test case
@@ -116,25 +108,23 @@ private:
      */
     Res parseArgsAndSolve(const std::string &input) const;
 
-public:
-    static constexpr unsigned int id{ID};
 private:
     std::vector<TestCase> _testCase{};
 };
 
-template<unsigned int ID, typename Res, typename... Args>
-Task<ID, Res(Args...)>::~Task() noexcept = default;
+template<const char *NAME, typename Res, typename... Args>
+Task<NAME, Res(Args...)>::~Task() noexcept = default;
 
-template<unsigned int ID, typename Res, typename... Args>
-inline void Task<ID, Res(Args...)>::addTestCase(std::string_view testCaseInput, std::string_view testCaseExpected) {
+template<const char *NAME, typename Res, typename... Args>
+inline void Task<NAME, Res(Args...)>::addTestCase(std::string_view testCaseInput, std::string_view testCaseExpected) {
     this->_testCase.emplace_back(
             std::string{testCaseInput},
             std::string{testCaseExpected}
     );
 }
 
-template<unsigned int ID, typename Res, typename... Args>
-inline std::vector<TestResult> Task<ID, Res(Args...)>::test() const {
+template<const char *NAME, typename Res, typename... Args>
+inline std::vector<TestResult> Task<NAME, Res(Args...)>::test() const {
     std::vector<TestResult> testResult(this->_testCase.size());
     unsigned int index = 0;
     std::for_each(
@@ -160,14 +150,14 @@ inline std::vector<TestResult> Task<ID, Res(Args...)>::test() const {
     return testResult;
 }
 
-template<unsigned int ID, typename Res, typename... Args>
+template<const char *NAME, typename Res, typename... Args>
 template<std::size_t... IS>
-Res Task<ID, Res(Args...)>::parseArgsAndSolveHelper(const std::string &input, std::index_sequence<IS...>) const {
+Res Task<NAME, Res(Args...)>::parseArgsAndSolveHelper(const std::string &input, std::index_sequence<IS...>) const {
     return this->solve(Parse::parseTypeByIndex<IS, Args>(input)...);
 }
 
-template<unsigned int ID, typename Res, typename... Args>
-Res Task<ID, Res(Args...)>::parseArgsAndSolve(const std::string &input) const {
+template<const char *NAME, typename Res, typename... Args>
+Res Task<NAME, Res(Args...)>::parseArgsAndSolve(const std::string &input) const {
     return this->parseArgsAndSolveHelper(input, std::index_sequence_for<Args...>{});
 }
 

@@ -17,12 +17,23 @@
 #include <memory>
 #include <utility>
 
-template<unsigned int ID, typename Func>
+template<const char *NAME, typename Func>
 class Task;
 
+template<const char *NAME, typename Res, typename... Args>
+class Task<NAME, Res(Args...)>;
 
-template<unsigned int ID, typename Res, typename... Args>
-class Task<ID, Res(Args...)>;
+template<typename Func>
+class TestCaseReader;
+
+template<typename Res, typename... Args>
+class TestCaseReader<Res(Args...)>;
+
+template<typename Func>
+class LeetCodeTestCaseReader;
+
+template<typename Res, typename... Args>
+class LeetCodeTestCaseReader<Res(Args...)>;
 
 template<typename T>
 class TaskRunner;
