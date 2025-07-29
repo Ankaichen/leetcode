@@ -17,11 +17,11 @@
 #include <memory>
 #include <utility>
 
-template<const char *NAME, typename Func>
+template<const char *Name, typename Func>
 class Task;
 
-template<const char *NAME, typename Res, typename... Args>
-class Task<NAME, Res(Args...)>;
+template<const char *Name, typename Res, typename... Args>
+class Task<Name, Res(Args...)>;
 
 template<typename Func>
 class TestCaseReader;

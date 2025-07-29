@@ -19,18 +19,7 @@
 #include "../../utils/compare.hpp"
 #include "../../utils/delete.hpp"
 #include "forward_declaration.h"
-
-/**
- * Test case
- * input:    the test input value, using ";" to split parameters,
- *           example: "input1 = [1, 2, 3, 4]; input2 = 3"
- * expected: the expected output value
- *           example: "[1, 2, 3]"
- */
-struct TestCase {
-    std::string input;
-    std::string expected;
-};
+#include "./test_case_reader.hpp"
 
 /**
  * Test result
@@ -48,11 +37,11 @@ struct TestResult {
  * @tparam Res  the task function return type
  * @tparam Args the task function parameter type pack
  */
-template<const char *NAME, typename Res, typename... Args>
-class Task<NAME, Res(Args...)> {
+template<const char *Name, typename Res, typename... Args>
+class Task<Name, Res(Args...)> {
 
 public:
-    using BaseType = Task<NAME, Res(Args...)>;
+    using BaseType = Task<Name, Res(Args...)>;
 
     Task() = default;
 
@@ -66,16 +55,7 @@ public:
      * Get the task title
      * @return the task title
      */
-    [[nodiscard]] inline std::string title() const { return std::string{NAME}; };
-
-    /**
-     * Add a test case
-     * @param testCaseInput    the input of test case
-     * @param testCaseExpected the expected of test case
-     */
-    inline void addTestCase(std::string_view testCaseInput, std::string_view testCaseExpected);
-
-    [[nodiscard]] inline const std::vector<TestCase> &getTestCase() const { return this->_testCase; }
+    [[nodiscard]] inline std::string title() const { return std::string{Name}; };
 
     /**
      * Use the solve() function to process the test case and return a bool vector,
@@ -92,36 +72,11 @@ public:
     virtual Res solve(Args... args) const = 0;
 
 private:
-    /**
-     * Auxiliary function for parsing strings based on parameter positions, then run the solve function
-     * @tparam IS   parameter index
-     * @param input test case input string
-     * @return algorithm result
-     */
-    template<std::size_t... IS>
-    Res parseArgsAndSolveHelper(const std::string &input, std::index_sequence<IS...>) const;
-
-    /**
-     * Auxiliary function, runs the solve function based on the test case string input
-     * @param input test case input string
-     * @return algorithm result
-     */
-    Res parseArgsAndSolve(const std::string &input) const;
-
-private:
-    std::vector<TestCase> _testCase{};
+    TestCaseReader<Res(Args...)> _testCaseReader;
 };
 
 template<const char *NAME, typename Res, typename... Args>
 Task<NAME, Res(Args...)>::~Task() noexcept = default;
-
-template<const char *NAME, typename Res, typename... Args>
-inline void Task<NAME, Res(Args...)>::addTestCase(std::string_view testCaseInput, std::string_view testCaseExpected) {
-    this->_testCase.emplace_back(
-            std::string{testCaseInput},
-            std::string{testCaseExpected}
-    );
-}
 
 template<const char *NAME, typename Res, typename... Args>
 inline std::vector<TestResult> Task<NAME, Res(Args...)>::test() const {
@@ -148,17 +103,6 @@ inline std::vector<TestResult> Task<NAME, Res(Args...)>::test() const {
                 Delete::deleteValue(expectedValue);
             });
     return testResult;
-}
-
-template<const char *NAME, typename Res, typename... Args>
-template<std::size_t... IS>
-Res Task<NAME, Res(Args...)>::parseArgsAndSolveHelper(const std::string &input, std::index_sequence<IS...>) const {
-    return this->solve(Parse::parseTypeByIndex<IS, Args>(input)...);
-}
-
-template<const char *NAME, typename Res, typename... Args>
-Res Task<NAME, Res(Args...)>::parseArgsAndSolve(const std::string &input) const {
-    return this->parseArgsAndSolveHelper(input, std::index_sequence_for<Args...>{});
 }
 
 

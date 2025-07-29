@@ -88,8 +88,8 @@ namespace TypeTraits {
     struct is_base_task : std::false_type {
     };
 
-    template<unsigned int ID, typename Res, typename... Args>
-    struct is_base_task<Task<ID, Res(Args...)>> : std::true_type {
+    template<const char *Name, typename Res, typename... Args>
+    struct is_base_task<Task<Name, Res(Args...)>> : std::true_type {
     };
 
     template<typename T>

@@ -19,7 +19,7 @@ add_subdirectory(tasks)
 
 add_executable(leetcode main.cpp)
 
-target_link_libraries(leetcode tasksLib)
+#target_link_libraries(leetcode tasksLib)
 
 #if (MSVC)
 #    target_compile_options(${PROJECT_NAME} PRIVATE

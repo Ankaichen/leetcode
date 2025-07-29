@@ -14,8 +14,10 @@
 #include <functional>
 #include <fstream>
 #include <ios>
+#include <string>
 
 #include "./forward_declaration.h"
+#include "../../utils/parse.hpp"
 
 template<typename Res, typename... Args>
 class TestCaseReader<Res(Args...)> {
@@ -24,46 +26,36 @@ public:
 public:
     TestCaseReader(std::string_view filePath) : _fileStream{std::string{filePath}, std::ios::out} {}
 
-    virtual ~TestCaseReader() noexcept {}
+    virtual ~TestCaseReader() noexcept = default;
 
-    void forEachTestCase(TestCaseCallBack callback) const;
+    void forEachTestCase(TestCaseCallBack callback);
 
-    virtual bool getNextTestCase(TestCaseCallBack callback) const = 0;
+    virtual bool getNextTestCase(TestCaseCallBack callback) = 0;
 
 protected:
-    std::fstream _fileStream{};
+    std::ifstream _fileStream{};
 };
 
 template<typename Res, typename... Args>
-void TestCaseReader<Res(Args...)>::forEachTestCase(std::function<void(Res, Args...)> callback) const {
+void TestCaseReader<Res(Args...)>::forEachTestCase(TestCaseCallBack callback) {
     while (getNextTestCase(callback));
 }
 
 template<typename Res, typename... Args>
 class LeetCodeTestCaseReader<Res(Args...)> : public TestCaseReader<Res(Args...)> {
 public:
-    LeetCodeTestCaseReader(std::string_view filePath);
+    using TestCaseCallBack = TestCaseReader<Res(Args...)>::TestCaseCallBack;
+public:
+    explicit LeetCodeTestCaseReader(std::string_view filePath);
 
     ~LeetCodeTestCaseReader() noexcept override;
 
-    bool getNextTestCase(typename TestCaseReader<Res(Args...)>::TestCaseCallBack callback) const override;
+    bool getNextTestCase(TestCaseCallBack callback) override;
 
 private:
-    /**
-     * Auxiliary function for parsing strings based on parameter positions, then run the solve function
-     * @tparam IS   parameter index
-     * @param input test case input string
-     * @return algorithm result
-     */
     template<std::size_t... IS>
-    Res parseArgsAndSolveHelper(const std::string &input, std::index_sequence<IS...>) const;
-
-    /**
-     * Auxiliary function, runs the solve function based on the test case string input
-     * @param input test case input string
-     * @return algorithm result
-     */
-    Res parseArgsAndSolve(const std::string &input) const;
+    void parseArgsAndSolve(const std::string &input, const std::string &output,
+                          std::index_sequence<IS...>, TestCaseCallBack callback) const;
 };
 
 template<typename Res, typename... Args>
@@ -71,18 +63,26 @@ LeetCodeTestCaseReader<Res(Args...)>::LeetCodeTestCaseReader(std::string_view fi
         :TestCaseReader<Res(Args...)>{filePath} {}
 
 template<typename Res, typename... Args>
-LeetCodeTestCaseReader<Res(Args...)>::~LeetCodeTestCaseReader() noexcept {}
+LeetCodeTestCaseReader<Res(Args...)>::~LeetCodeTestCaseReader() noexcept = default;
 
 template<typename Res, typename... Args>
-bool LeetCodeTestCaseReader<Res(Args...)>::getNextTestCase(
-        typename TestCaseReader<Res(Args...)>::TestCaseCallBack callback) const {
-    std::string line{};
-    while (std::getline(this->_fileStream, line)) {
-        this->parseArgsAndSolve(line);
+bool LeetCodeTestCaseReader<Res(Args...)>::getNextTestCase(TestCaseCallBack callback) {
+    std::string input{}, output{};
+    std::getline(this->_fileStream, input, '|');
+    std::getline(this->_fileStream, output);
+    if (!input.empty() && !output.empty()) {
+        this->parseArgsAndSolve(input, output, std::index_sequence_for<Args...>{}, callback);
+        return true;
     }
+    return false;
+}
 
-
-    return true;
+template<typename Res, typename... Args>
+template<std::size_t... IS>
+void LeetCodeTestCaseReader<Res(Args...)>::parseArgsAndSolve(
+        const std::string &input, const std::string &output,
+        std::index_sequence<IS...>, TestCaseCallBack callback) const {
+    callback(Parse::parseType<Res>(output), Parse::parseTypeByIndex<IS, Args>(input)...);
 }
 
 #endif //LEETCODE_TEST_CASE_READER_HPP
