@@ -54,7 +54,7 @@ namespace Compare {
 
     template<typename T>
     static bool compare(const T &value1, const T &value2) {
-        using CompareType = std::remove_cv_t<std::remove_reference_t<T>>;
+        using CompareType = std::remove_cvref_t<T>;
         if constexpr (std::is_integral_v<CompareType>) {
             return _detail::compareIntegral(value1, value2);
         } else if constexpr (std::is_floating_point_v<CompareType>) {

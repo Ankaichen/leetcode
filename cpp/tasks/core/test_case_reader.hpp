@@ -25,7 +25,7 @@ public:
     using TestCaseCallBack = std::function<void(Res, Args...)>;
 
 public:
-    TestCaseCallBack() = default;
+    TestCaseReader() = default;
 
     TestCaseReader(std::string_view filePath) : _fileStream{std::string{filePath}, std::ios::out} {}
 

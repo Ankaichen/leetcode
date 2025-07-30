@@ -29,7 +29,7 @@ namespace TypeTraits {
     template<typename T>
     class is_vector<std::vector<T>> : public std::true_type {
     public:
-        using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
+        using value_type = std::remove_cvref_t<T>;
     };
 
     template<typename T>
@@ -39,31 +39,34 @@ namespace TypeTraits {
     using vector_value_t = is_vector<T>::value_type;
 
     template<typename T>
+    concept vector_c = is_vector_v<T>;
+
+    template<typename T>
     struct is_set : public std::false_type {
     };
 
     template<typename T>
     struct is_set<std::set<T>> : public std::true_type {
     public:
-        using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
+        using value_type = std::remove_cvref_t<T>;
     };
 
     template<typename T>
     struct is_set<std::unordered_set<T>> : public std::true_type {
     public:
-        using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
+        using value_type = std::remove_cvref_t<T>;
     };
 
     template<typename T>
     struct is_set<std::multiset<T>> : public std::true_type {
     public:
-        using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
+        using value_type = std::remove_cvref_t<T>;
     };
 
     template<typename T>
     struct is_set<std::unordered_multiset<T>> : public std::true_type {
     public:
-        using value_type = std::remove_cv_t<std::remove_reference_t<T>>;
+        using value_type = std::remove_cvref_t<T>;
     };
 
     template<typename T>
@@ -72,17 +75,26 @@ namespace TypeTraits {
     template<typename T>
     using set_value_t = is_set<T>::value_type;
 
-    template<typename T, typename = void>
+    template<typename T>
+    concept set_c = is_set_v<T>;
+
+    template<typename T>
+    concept container_c = requires(T a) {
+        { std::begin(a) } -> std::input_iterator;
+        { std::end(a) } -> std::sentinel_for<decltype(std::begin(a))>;
+    };
+
+    template<typename T>
     struct is_container : std::false_type {
     };
 
     template<typename T>
-    struct is_container<T, std::void_t<decltype(std::begin(std::declval<T>())),
-            decltype(std::end(std::declval<T>()))>> : std::true_type {
+    requires container_c<T>
+    struct is_container<T> : std::true_type {
     };
 
     template<typename T>
-    inline constexpr bool is_container_v = is_container<T>::value;
+    constexpr bool is_container_v = is_container<T>::value;
 
     template<typename T>
     struct is_base_task : std::false_type {
@@ -93,7 +105,7 @@ namespace TypeTraits {
     };
 
     template<typename T>
-    inline constexpr bool is_base_task_v = is_base_task<T>::value;
+    constexpr bool is_base_task_v = is_base_task<T>::value;
 
     template<typename T>
     struct is_task : public std::conjunction<is_base_task<typename T::BaseType>, std::negation<std::is_abstract<T>>> {

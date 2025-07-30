@@ -100,8 +100,64 @@
 // #include "./tasks/core/test_case_reader.hpp"
 #include "./utils/parameter_type_traits.hpp"
 
+template<typename T, typename Y, int A>
+class Test1 {
+public:
+    virtual ~Test1() = 0;
+};
+template<typename T, typename Y, int A>
+Test1<T, Y, A>::~Test1() = default;
+
+class Test2 : public Test1<int, float, 2> {
+public:
+    ~Test2() override = default;
+};
+
+template<typename T>
+class is_base_test : public std::false_type {};
+
+template<typename T, typename Y, int A>
+class is_base_test<Test1<T, Y, A>> : public std::true_type {};
+
+template<typename T>
+constexpr bool is_test_v = is_base_test<T>::value;
+
+template<typename T>
+class is_derived_from_test : public std::false_type {};
+
+template<typename T>
+class is_derived_from_test_helper {
+private:
+    template<typename X1, typename X2, int A>
+    static std::true_type test(const Test1<X1, X2, A>*) { return {}; }
+    static std::false_type test(...) { return {}; }
+
+public:
+    static constexpr bool value = decltype(test(std::declval<T*>()))::value;
+};
+
+template<typename T>
+concept is_derived_from_test_c = is_derived_from_test_helper<T>::value;
+
+template<typename T>
+requires is_derived_from_test_c<T>
+class is_derived_from_test<T> : public std::true_type {};
+
+template<typename T>
+constexpr bool is_derived_from_test_v = is_derived_from_test<T>::value;
+
 int main() {
-    std::cout << std::boolalpha << TypeTraits::is_vector_v<std::vector<float>> << std::endl;
+    std::cout << std::boolalpha << is_test_v<Test1<double, char, 3>> << std::endl;
+    std::cout << std::boolalpha << is_test_v<Test2> << std::endl;
+    std::cout << std::boolalpha << is_test_v<int> << std::endl;
+    std::cout << std::boolalpha << is_test_v<void> << std::endl;
+    std::cout << std::boolalpha << is_test_v<void*> << std::endl;
+    std::cout << "--------------------------------------------------------" << std::endl;
+    std::cout << std::boolalpha << is_derived_from_test_v<Test1<double, char, 3>> << std::endl;
+    std::cout << std::boolalpha << is_derived_from_test_v<Test2> << std::endl;
+    std::cout << std::boolalpha << is_derived_from_test_v<int> << std::endl;
+    std::cout << std::boolalpha << is_derived_from_test_v<void> << std::endl;
+    std::cout << std::boolalpha << is_derived_from_test_v<void*> << std::endl;
 
     // LeetCodeTestCaseReader<std::vector<int>(const std::vector<int>&, int)> leetCodeTestCaseReader{
     //     R"(D:\Work Space\leetcode\cpp\tasks\task_input\test1.txt)"};

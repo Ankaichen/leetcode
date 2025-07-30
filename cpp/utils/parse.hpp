@@ -26,7 +26,7 @@
 namespace Parse {
 
     template<typename T>
-    static std::remove_cv_t<std::remove_reference_t<T>> parseType(const std::string &input);
+    static std::remove_cvref_t<T> parseType(const std::string &input);
 
     namespace _detail {
 
@@ -174,8 +174,8 @@ namespace Parse {
         }
 
         template<typename T>
-        static std::remove_cv_t<std::remove_reference_t<T>> parseContainer(const std::string &input) {
-            using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
+        static std::remove_cvref_t<T> parseContainer(const std::string &input) {
+            using ParseType = std::remove_cvref_t<T>;
             if constexpr (std::is_same_v<ParseType, std::string>) {
                 return parseString(input);
             } else if constexpr (TypeTraits::is_vector_v<ParseType>) {
@@ -194,8 +194,8 @@ namespace Parse {
      * @return      parameter value
      */
     template<typename T>
-    static std::remove_cv_t<std::remove_reference_t<T>> parseType(const std::string &input) {
-        using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
+    static std::remove_cvref_t<T> parseType(const std::string &input) {
+        using ParseType = std::remove_cvref_t<T>;
         if constexpr (std::is_arithmetic_v<ParseType>) {
             return _detail::parseValue<ParseType>(input);
         } else if constexpr (TypeTraits::is_container_v<ParseType>) {
@@ -213,15 +213,15 @@ namespace Parse {
      * @return       parameter value
      */
     template<unsigned int Index, typename T>
-    static std::remove_cv_t<std::remove_reference_t<T>> parseTypeByIndex(const std::string &input) {
-        using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
+    static std::remove_cvref_t<T> parseTypeByIndex(const std::string &input) {
+        using ParseType = std::remove_cvref_t<T>;
         std::string slicedString = _detail::stringSlice<Index>(input);
         return parseType<ParseType>(slicedString);
     }
 
     template<typename T>
     static std::string toString(const T &value) {
-        using ParseType = std::remove_cv_t<std::remove_reference_t<T>>;
+        using ParseType = std::remove_cvref_t<T>;
         if constexpr (std::is_same_v<ParseType, char>) {
             return std::string{static_cast<char>(value)};
         } else if constexpr (std::is_same_v<ParseType, bool>) {

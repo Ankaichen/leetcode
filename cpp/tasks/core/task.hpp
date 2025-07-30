@@ -94,7 +94,7 @@ inline std::vector<TestResult> Task<Name, Res(Args...)>::test() const {
     this->_testCaseReader.forEachTestCase([this](Res res, Args... args) -> void {
         Res solveResult{};
         try {
-            solveResult = this->solve(args);
+            solveResult = this->solve(args...);
         } catch (const std::exception &e) {
             std::ostringstream oss;
             ((oss << Parse::toString<Args>(args) << "; "), ...);
