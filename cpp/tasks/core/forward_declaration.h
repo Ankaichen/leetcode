@@ -1,21 +1,21 @@
 /**
-  ******************************************************************************
-  * @file           : forward_declaration.h
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-4-19
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : forward_declaration.h
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-4-19
+ ******************************************************************************
+ */
 
 #ifndef LEETCODE_FORWARD_DECLARATION_H
 #define LEETCODE_FORWARD_DECLARATION_H
 
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
-#include <memory>
 #include <utility>
+#include <vector>
 
 template<const char *Name, typename Func>
 class Task;
@@ -34,6 +34,12 @@ class LeetCodeTestCaseReader;
 
 template<typename Res, typename... Args>
 class LeetCodeTestCaseReader<Res(Args...)>;
+
+template<typename InputRes, typename OutputRes>
+class TestResultProcessor;
+
+template<typename InputRes>
+class NormalTestResultProcessor;
 
 template<typename T>
 class TaskRunner;
@@ -65,8 +71,7 @@ public:
 
     void union_value(const T &v1, const T &v2) {
         int index1 = this->find_root_index(v1), index2 = this->find_root_index(v2);
-        if (index1 == index2 || index1 == -1 || index2 == -1)
-            return;
+        if (index1 == index2 || index1 == -1 || index2 == -1) return;
         int size1 = this->_sizes[index1], size2 = this->_sizes[index2];
         if (size1 < size2) {
             std::swap(index1, index2);
@@ -84,9 +89,7 @@ public:
         return index1 == index2;
     }
 
-    std::size_t union_size(const T &value) {
-        return this->_sizes[this->find_root_index(value)];
-    }
+    std::size_t union_size(const T &value) { return this->_sizes[this->find_root_index(value)]; }
 
 private:
     int find_root_index(const T &value) {
@@ -99,7 +102,6 @@ private:
     }
 
 private:
-
     std::unordered_map<T, std::size_t> _data{};
     std::vector<std::size_t> _dataParent{};
     std::vector<int> _sizes{};
@@ -117,8 +119,7 @@ public:
     }
 
     void insert(const T &value) {
-        if (value < this->_dataParent.size())
-            return;
+        if (value < this->_dataParent.size()) return;
         std::size_t size = this->_dataParent.size();
         this->_dataParent.resize(value);
         for (std::size_t i = size; i < this->_dataParent.size(); ++i) {
@@ -129,8 +130,7 @@ public:
 
     void union_value(const T &v1, const T &v2) {
         int index1 = this->find_root_index(v1), index2 = this->find_root_index(v2);
-        if (index1 == index2 || index1 == -1 || index2 == -1)
-            return;
+        if (index1 == index2 || index1 == -1 || index2 == -1) return;
         int size1 = this->_sizes[index1], size2 = this->_sizes[index2];
         if (size1 < size2) {
             std::swap(index1, index2);
@@ -147,14 +147,11 @@ public:
         return index1 == index2;
     }
 
-    std::size_t union_size(const T &value) {
-        return this->_sizes[this->find_root_index(value)];
-    }
+    std::size_t union_size(const T &value) { return this->_sizes[this->find_root_index(value)]; }
 
 private:
     int find_root_index(const T &value) {
-        if (value >= this->_dataParent.size())
-            return -1;
+        if (value >= this->_dataParent.size()) return -1;
         std::size_t i = value;
         for (; this->_dataParent[i] != i; i = this->_dataParent[i]);
         this->_dataParent[value] = i;
@@ -165,5 +162,4 @@ private:
     std::vector<int> _sizes{};
 };
 
-
-#endif //LEETCODE_FORWARD_DECLARATION_H
+#endif  // LEETCODE_FORWARD_DECLARATION_H

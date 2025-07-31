@@ -37,16 +37,14 @@ struct TestResult {
  * @tparam Res  the task function return type
  * @tparam Args the task function parameter type pack
  */
-template <const char *Name, typename Res, typename... Args>
+template<const char *Name, typename Res, typename... Args>
 class Task<Name, Res(Args...)> {
 public:
-    using BaseType = Task<Name, Res(Args...)>;
-
     Task() = default;
 
-    Task(const BaseType &problem) = delete;
+    Task(const Task<Name, Res(Args...)> &problem) = delete;
 
-    Task(BaseType &&problem) = delete;
+    Task(Task<Name, Res(Args...)> &&problem) = delete;
 
     void init() { this->_testCaseReader.setFile("./task_input" + this->getTestCaseFileName()); }
 
@@ -85,10 +83,10 @@ private:
     TestCaseReader<Res(Args...)> _testCaseReader;
 };
 
-template <const char *Name, typename Res, typename... Args>
+template<const char *Name, typename Res, typename... Args>
 Task<Name, Res(Args...)>::~Task() noexcept = default;
 
-template <const char *Name, typename Res, typename... Args>
+template<const char *Name, typename Res, typename... Args>
 inline std::vector<TestResult> Task<Name, Res(Args...)>::test() const {
     std::vector<TestResult> testResult{};
     this->_testCaseReader.forEachTestCase([this](Res res, Args... args) -> void {
@@ -101,10 +99,6 @@ inline std::vector<TestResult> Task<Name, Res(Args...)>::test() const {
             std::cerr << "An error occurred in the test case:" << std::endl << "\t" << oss.str() << std::endl << "\t" << e.what() << std::endl;
             exit(-1);
         }
-
-
-
-        
     });
 
     std::vector<TestResult> testResult(this->_testCase.size());

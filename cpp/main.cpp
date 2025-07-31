@@ -129,7 +129,9 @@ template<typename T>
 class is_derived_from_test_helper {
 private:
     template<typename X1, typename X2, int A>
-    static std::true_type test(const Test1<X1, X2, A>*) { return {}; }
+    static std::true_type test(const Test1<X1, X2, A>*) {
+        return {};
+    }
     static std::false_type test(...) { return {}; }
 
 public:
