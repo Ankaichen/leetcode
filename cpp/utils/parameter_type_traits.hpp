@@ -134,7 +134,7 @@ namespace TypeTraits {
     class __is_any_test_case_reader_helper {
     private:
         template<typename Res, typename... Args>
-        static std::true_type __helper(TestCaseReader<Res(Args...)>) {
+        static std::true_type __helper(const TestCaseReader<Res(Args...)> *) {
             return {};
         }
         static std::false_type __helper(...) { return {}; }
@@ -166,7 +166,7 @@ namespace TypeTraits {
     class __is_any_test_result_processor {
     private:
         template<typename InputRes, typename OutputRes>
-        static std::true_type __helper(TestResultProcessor<InputRes, OutputRes> *) {
+        static std::true_type __helper(const TestResultProcessor<InputRes, OutputRes> *) {
             return {};
         }
         static std::false_type __helper(...) { return {}; }
