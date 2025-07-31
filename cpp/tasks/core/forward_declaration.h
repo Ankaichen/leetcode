@@ -17,11 +17,11 @@
 #include <utility>
 #include <vector>
 
-template<const char *Name, typename Func>
+template<const char *Name, typename Reader, typename Processor, typename Func>
 class Task;
 
-template<const char *Name, typename Res, typename... Args>
-class Task<Name, Res(Args...)>;
+template<const char *Name, typename Reader, typename Processor, typename Res, typename... Args>
+class Task<Name, Reader, Processor, Res(Args...)>;
 
 template<typename Func>
 class TestCaseReader;

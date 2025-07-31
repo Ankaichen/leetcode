@@ -27,7 +27,7 @@ public:
 public:
     TestCaseReader() = default;
 
-    TestCaseReader(std::string_view filePath) : _fileStream{std::string{filePath}, std::ios::out} {}
+    explicit TestCaseReader(std::string_view filePath) : _fileStream{std::string{filePath}, std::ios::out} {}
 
     virtual ~TestCaseReader() noexcept = 0;
 

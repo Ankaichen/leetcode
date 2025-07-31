@@ -31,8 +31,8 @@ TestResultProcessor<InputRes, OutputResult>::~TestResultProcessor() noexcept = d
 
 template<typename InputRes>
 class NormalTestResultProcessor : public TestResultProcessor<InputRes, InputRes> {
-    using CleanInputType = TestResultProcessor<InputRes, InputRes>::CleanInputType;
-    using CleanOutputType = TestResultProcessor<InputRes, InputRes>::CleanOutputType;
+    using typename TestResultProcessor<InputRes, InputRes>::CleanInputType;
+    using typename TestResultProcessor<InputRes, InputRes>::CleanOutputType;
 public:
     NormalTestResultProcessor() = default;
 

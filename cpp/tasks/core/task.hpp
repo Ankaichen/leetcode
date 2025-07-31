@@ -37,14 +37,19 @@ struct TestResult {
  * @tparam Res  the task function return type
  * @tparam Args the task function parameter type pack
  */
-template<const char *Name, typename Res, typename... Args>
-class Task<Name, Res(Args...)> {
+template<const char *Name,
+        TypeTraits::is_test_case_reader_c Reader,
+        TypeTraits::is_test_result_processor_c Processor,
+        typename Res, typename... Args> requires TypeTraits::is_task_fit_c<Task<Name, Reader, Processor, Res(
+        Args...)>, Reader, Processor>
+class Task<Name, Reader, Processor, Res(Args...)> {
+
 public:
     Task() = default;
 
-    Task(const Task<Name, Res(Args...)> &problem) = delete;
+    Task(const Task<Name, Reader, Processor, Res(Args...)> &problem) = delete;
 
-    Task(Task<Name, Res(Args...)> &&problem) = delete;
+    Task(Task<Name, Reader, Processor, Res(Args...)> &&problem) = delete;
 
     void init() { this->_testCaseReader.setFile("./task_input" + this->getTestCaseFileName()); }
 
@@ -80,44 +85,46 @@ public:
     virtual Res solve(Args... args) const = 0;
 
 private:
-    TestCaseReader<Res(Args...)> _testCaseReader;
+    Reader _testCaseReader;
+    Processor _testResultProcessor;
 };
 
-template<const char *Name, typename Res, typename... Args>
-Task<Name, Res(Args...)>::~Task() noexcept = default;
+template<const char *Name,
+        TypeTraits::is_test_case_reader_c Reader,
+        TypeTraits::is_test_result_processor_c Processor,
+        typename Res, typename... Args>
+requires TypeTraits::is_task_fit_c<Task<Name, Reader, Processor, Res(
+        Args...)>, Reader, Processor>
+Task<Name, Reader, Processor, Res(Args...)>::~Task() noexcept = default;
 
-template<const char *Name, typename Res, typename... Args>
-inline std::vector<TestResult> Task<Name, Res(Args...)>::test() const {
+template<const char *Name,
+        TypeTraits::is_test_case_reader_c Reader,
+        TypeTraits::is_test_result_processor_c Processor,
+        typename Res, typename... Args>
+requires TypeTraits::is_task_fit_c<Task<Name, Reader, Processor, Res(
+        Args...)>, Reader, Processor>
+inline std::vector<TestResult> Task<Name, Reader, Processor, Res(Args...)>::test() const {
+    using ProcessedResultType = decltype(this->_testResultProcessor.processResult(std::declval<Res>()));
     std::vector<TestResult> testResult{};
-    this->_testCaseReader.forEachTestCase([this](Res res, Args... args) -> void {
+    this->_testCaseReader.forEachTestCase([this, &testResult](Res res, Args... args) -> void {
         Res solveResult{};
         try {
             solveResult = this->solve(args...);
         } catch (const std::exception &e) {
             std::ostringstream oss;
             ((oss << Parse::toString<Args>(args) << "; "), ...);
-            std::cerr << "An error occurred in the test case:" << std::endl << "\t" << oss.str() << std::endl << "\t" << e.what() << std::endl;
+            std::cerr << "An error occurred in the test case:" << std::endl << "\t" << oss.str() << std::endl << "\t"
+                      << e.what() << std::endl;
             exit(-1);
         }
-    });
-
-    std::vector<TestResult> testResult(this->_testCase.size());
-    unsigned int index = 0;
-    std::for_each(this->_testCase.cbegin(), this->_testCase.cend(), [this, &testResult, index](const TestCase &testCase) mutable -> void {
-        Res resValue{};
-        try {
-            resValue = this->parseArgsAndSolve(testCase.input);
-        } catch (const std::exception &e) {
-            std::cerr << "An error occurred in the test case:" << std::endl << "\t" << testCase.input << std::endl << "\t" << e.what() << std::endl;
-            exit(-1);
-        }
-        Res expectedValue = Parse::parseType<Res>(testCase.expected);
-        bool resultFlag = Compare::compare(resValue, expectedValue);
-        unsigned int curI = index++;
-        testResult[curI].flag = resultFlag;
-        testResult[curI].output = Parse::toString<Res>(resValue);
-        Delete::deleteValue(resValue);
-        Delete::deleteValue(expectedValue);
+        ProcessedResultType processedSolveResult = this->_testResultProcessor.processResult(solveResult);
+        ProcessedResultType processedResult = this->_testResultProcessor.processResult(res);
+        bool resultFlag = Compare::compare(processedSolveResult, processedResult);
+        testResult.emplace_back(resultFlag, Parse::toString<Res>(solveResult));
+        Delete::deleteValue(solveResult);
+        Delete::deleteValue(res);
+        Delete::deleteValue(processedSolveResult);
+        Delete::deleteValue(processedResult);
     });
     return testResult;
 }
