@@ -11,13 +11,12 @@
 #ifndef LEETCODE_TEST_RESULT_PROCESSOR_HPP
 #define LEETCODE_TEST_RESULT_PROCESSOR_HPP
 
-#include <type_traits>
-
 template<typename InputRes, typename OutputRes>
 class TestResultProcessor {
 protected:
     using CleanInputType = std::remove_cvref_t<InputRes>;
     using CleanOutputType = std::remove_cvref_t<OutputRes>;
+
 public:
     TestResultProcessor() = default;
 
@@ -33,6 +32,7 @@ template<typename InputRes>
 class NormalTestResultProcessor : public TestResultProcessor<InputRes, InputRes> {
     using typename TestResultProcessor<InputRes, InputRes>::CleanInputType;
     using typename TestResultProcessor<InputRes, InputRes>::CleanOutputType;
+
 public:
     NormalTestResultProcessor() = default;
 
@@ -42,11 +42,8 @@ public:
 };
 
 template<typename InputRes>
-NormalTestResultProcessor<InputRes>::CleanOutputType
-NormalTestResultProcessor<InputRes>::processResult(const CleanInputType &input) const {
+NormalTestResultProcessor<InputRes>::CleanOutputType NormalTestResultProcessor<InputRes>::processResult(const CleanInputType &input) const {
     return input;
 }
-
-
 
 #endif  // LEETCODE_TEST_RESULT_PROCESSOR_HPP

@@ -1,27 +1,27 @@
 /**
-  ******************************************************************************
-  * @file           : parse.h
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-4-18
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : parse.h
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-4-18
+ ******************************************************************************
+ */
 
 #ifndef LEETCODE_PARSE_HPP
 #define LEETCODE_PARSE_HPP
 
-#include <ranges>
-#include <string>
-#include <sstream>
-#include <type_traits>
-#include <vector>
-#include <set>
-#include <unordered_set>
-#include <stack>
 #include <cassert>
+#include <ranges>
+#include <set>
+#include <sstream>
+#include <stack>
+#include <string>
+#include <type_traits>
+#include <unordered_set>
+#include <vector>
 
-#include "parameter_type_traits.hpp"
+#include "../tasks/core/task_type_traits.hpp"
 
 namespace Parse {
 
@@ -72,8 +72,10 @@ namespace Parse {
             } else if constexpr (std::is_same_v<T, double>) {
                 return std::stod(input);
             } else if constexpr (std::is_same_v<T, bool>) {
-                if (input == "true") return true;
-                else return false;
+                if (input == "true")
+                    return true;
+                else
+                    return false;
             } else {
                 static_assert(false);
             }
@@ -102,7 +104,9 @@ namespace Parse {
                         if (!curValue.empty()) {
                             result.push_back(parseType<result_type>(curValue));
                         }
-                        { decltype(ss) temp = std::move(ss); }
+                        {
+                            decltype(ss) temp = std::move(ss);
+                        }
                     } else {
                         ss << c;
                     }
@@ -121,13 +125,12 @@ namespace Parse {
             using ValType = decltype(std::declval<ListNode>().val);
             std::vector<ValType> vec = parseVector<std::vector<ValType>>(input);
             ListNode *p = nullptr, *q = nullptr;
-            for (int i: std::ranges::reverse_view(vec)) {
+            for (int i : std::ranges::reverse_view(vec)) {
                 q = new ListNode(i, p);
                 p = q;
             }
             return p;
         }
-
 
         template<typename T>
         static T parseSet(const std::string &input) {
@@ -152,7 +155,9 @@ namespace Parse {
                         if (!curValue.empty()) {
                             result.insert(parseType<result_type>(curValue));
                         }
-                        { decltype(ss) temp = std::move(ss); }
+                        {
+                            decltype(ss) temp = std::move(ss);
+                        }
                     } else {
                         ss << c;
                     }
@@ -185,7 +190,7 @@ namespace Parse {
             }
         }
 
-    }
+    }  // namespace _detail
 
     /**
      * Parsing a string with a single parameter
@@ -262,6 +267,6 @@ namespace Parse {
         }
     }
 
-};
+};  // namespace Parse
 
-#endif //LEETCODE_PARSE_HPP
+#endif  // LEETCODE_PARSE_HPP

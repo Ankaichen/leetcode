@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file           : forward_declaration.h
+ * @file           : utils.h
  * @author         : An Kaichen
  * @brief          : None
  * @attention      : None
@@ -8,41 +8,14 @@
  ******************************************************************************
  */
 
-#ifndef LEETCODE_FORWARD_DECLARATION_H
-#define LEETCODE_FORWARD_DECLARATION_H
+#ifndef LEETCODE_CORE_UTILS_H
+#define LEETCODE_CORE_UTILS_H
 
 #include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
-
-template<const char *Name, typename Reader, typename Processor, typename Func>
-class Task;
-
-template<const char *Name, typename Reader, typename Processor, typename Res, typename... Args>
-class Task<Name, Reader, Processor, Res(Args...)>;
-
-template<typename Func>
-class TestCaseReader;
-
-template<typename Res, typename... Args>
-class TestCaseReader<Res(Args...)>;
-
-template<typename Func>
-class LeetCodeTestCaseReader;
-
-template<typename Res, typename... Args>
-class LeetCodeTestCaseReader<Res(Args...)>;
-
-template<typename InputRes, typename OutputRes>
-class TestResultProcessor;
-
-template<typename InputRes>
-class NormalTestResultProcessor;
-
-template<typename T>
-class TaskRunner;
 
 struct ListNode {
     int val;
@@ -162,4 +135,4 @@ private:
     std::vector<int> _sizes{};
 };
 
-#endif  // LEETCODE_FORWARD_DECLARATION_H
+#endif  // LEETCODE_CORE_UTILS_H

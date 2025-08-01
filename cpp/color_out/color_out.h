@@ -1,12 +1,12 @@
 /**
-  ******************************************************************************
-  * @file           : color_out.h
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-4-19
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : color_out.h
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-4-19
+ ******************************************************************************
+ */
 
 #ifndef LEETCODE_COLOR_OUT_H
 #define LEETCODE_COLOR_OUT_H
@@ -88,9 +88,7 @@ namespace ColorOut {
      * @param ts TextStyle
      * @return   std::ostream
      */
-    inline std::ostream &operator<<(std::ostream &os, const TextStyle &ts) {
-        return os << "\033[" << ts._codes << "m";
-    }
+    inline std::ostream &operator<<(std::ostream &os, const TextStyle &ts) { return os << "\033[" << ts._codes << "m"; }
 
     // Factory functions for single codes
     inline TextStyle Fg(FG color) { return TextStyle(std::to_string(static_cast<int>(color))); }
@@ -100,12 +98,7 @@ namespace ColorOut {
     inline TextStyle Reset() { return TextStyle("0"); }
 
     // Combined foreground+background
-    inline TextStyle color(FG f, BG b) {
-        return TextStyle(
-                std::to_string(static_cast<int>(f)) + ";" +
-                std::to_string(static_cast<int>(b))
-        );
-    }
+    inline TextStyle color(FG f, BG b) { return TextStyle(std::to_string(static_cast<int>(f)) + ";" + std::to_string(static_cast<int>(b))); }
 
     inline const TextStyle reset = Reset();
 
@@ -127,7 +120,6 @@ namespace ColorOut {
     inline const TextStyle lightCyan_fg = Fg(FG::LightCyan);
     inline const TextStyle white_fg = Fg(FG::White);
 
-
     inline const TextStyle default_bg = Bg(BG::Default);
     inline const TextStyle black_bg = Bg(BG::Black);
     inline const TextStyle red_bg = Bg(BG::Red);
@@ -146,8 +138,6 @@ namespace ColorOut {
     inline const TextStyle lightCyan_bg = Bg(BG::LightCyan);
     inline const TextStyle white_bg = Bg(BG::White);
 
+}  // namespace ColorOut
 
-}
-
-
-#endif //LEETCODE_COLOR_OUT_H
+#endif  // LEETCODE_COLOR_OUT_H

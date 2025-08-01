@@ -1,5 +1,5 @@
-// #include "initialize.h"
-// #include "tasks/task_impl/include/task1.h"
+#include "initialize.h"
+#include "tasks/task_impl/include/task1.h"
 // #include "tasks/task_impl/include/task2.h"
 // #include "tasks/task_impl/include/task3.h"
 // #include "tasks/task_impl/include/task7.h"
@@ -93,44 +93,4 @@
 //         Task2416
 //)
 
-#include <cassert>
-#include <iostream>
-#include <vector>
-
-#include "./tasks/core/test_case_reader.hpp"
-#include "./tasks/core/test_result_processor.hpp"
-#include "./utils/parameter_type_traits.hpp"
-
-int main() {
-
-    std::cout << std::boolalpha << TypeTraits::is_test_case_reader_v<int> << std::endl;
-    std::cout << std::boolalpha << TypeTraits::is_test_case_reader_v<int(int)> << std::endl;
-    std::cout << std::boolalpha << TypeTraits::is_test_case_reader_v<TestCaseReader<int(int)>> << std::endl;
-    std::cout << std::boolalpha << TypeTraits::is_test_case_reader_v<LeetCodeTestCaseReader<int(int)>> << std::endl;
-    std::cout << std::boolalpha << TypeTraits::is_test_case_reader_v<TestResultProcessor<int, int>> << std::endl;
-    std::cout << std::boolalpha << TypeTraits::is_test_case_reader_v<NormalTestResultProcessor<int>> << std::endl;
-
-    std::cout << "==========================================================================" << std::endl;
-
-    std::cout << std::boolalpha << TypeTraits::is_test_result_processor_v<int> << std::endl;
-    std::cout << std::boolalpha << TypeTraits::is_test_result_processor_v<int(int)> << std::endl;
-    std::cout << std::boolalpha << TypeTraits::is_test_result_processor_v<TestCaseReader<int(int)>> << std::endl;
-    std::cout << std::boolalpha << TypeTraits::is_test_result_processor_v<LeetCodeTestCaseReader<int(int)>> << std::endl;
-    std::cout << std::boolalpha << TypeTraits::is_test_result_processor_v<TestResultProcessor<int, int>> << std::endl;
-    std::cout << std::boolalpha << TypeTraits::is_test_result_processor_v<NormalTestResultProcessor<int>> << std::endl;
-
-    // LeetCodeTestCaseReader<std::vector<int>(const std::vector<int>&, int)> leetCodeTestCaseReader{
-    //     R"(D:\Work Space\leetcode\cpp\tasks\task_input\test1.txt)"};
-
-    // leetCodeTestCaseReader.forEachTestCase([](const std::vector<int>& vr, const std::vector<int>& v1, int i1) -> void {
-    //     for (auto i : vr) std::cout << i << ", ";
-    //     std::cout << std::endl;
-
-    //     for (auto i : v1) std::cout << i << ", ";
-    //     std::cout << std::endl;
-
-    //     std::cout << i1 << std::endl;
-    // });
-
-    return 0;
-}
+TASK_MAIN(LeetcodeTask1)

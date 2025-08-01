@@ -1,12 +1,12 @@
 /**
-  ******************************************************************************
-  * @file           : initialize.h
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-4-19
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : initialize.h
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-4-19
+ ******************************************************************************
+ */
 
 #ifndef LEETCODE_INITIALIZE_H
 #define LEETCODE_INITIALIZE_H
@@ -19,10 +19,10 @@ void runTasks() {
     (TaskRunner<Tasks>::getInstance().run(), ...);
 }
 
-#define TASK_MAIN(...)       \
-int main() {                 \
-    runTasks<__VA_ARGS__>(); \
-    return 0;                \
-}
+#define TASK_MAIN(...)           \
+    int main() {                 \
+        runTasks<__VA_ARGS__>(); \
+        return 0;                \
+    }
 
-#endif //LEETCODE_INITIALIZE_H
+#endif  // LEETCODE_INITIALIZE_H

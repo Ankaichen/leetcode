@@ -1,23 +1,24 @@
 /**
-  ******************************************************************************
-  * @file           : compare.hpp
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-4-18
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : compare.hpp
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-4-18
+ ******************************************************************************
+ */
 
 #ifndef LEETCODE_COMPARE_HPP
 #define LEETCODE_COMPARE_HPP
 
-#include <vector>
-#include <type_traits>
+#include <algorithm>
 #include <cmath>
 #include <iterator>
-#include <algorithm>
+#include <type_traits>
+#include <vector>
 
-#include "parameter_type_traits.hpp"
+#include "../tasks/core/task_type_traits.hpp"
+#include "../tasks/core/utils.h"
 
 namespace Compare {
 
@@ -50,7 +51,7 @@ namespace Compare {
             }
             return (value1 == nullptr) && (value2 == nullptr);
         }
-    }
+    }  // namespace _detail
 
     template<typename T>
     static bool compare(const T &value1, const T &value2) {
@@ -61,12 +62,11 @@ namespace Compare {
             return _detail::compareFloatingPoint(value1, value2);
         } else if constexpr (TypeTraits::is_container_v<CompareType>) {
             return _detail::compareContainer(value1, value2);
-        } else if constexpr (std::is_same_v<CompareType, ListNode*>) {
+        } else if constexpr (std::is_same_v<CompareType, ListNode *>) {
             return _detail::compareListNode(value1, value2);
         }
-
     }
 
-}
+}  // namespace Compare
 
-#endif //LEETCODE_COMPARE_HPP
+#endif  // LEETCODE_COMPARE_HPP

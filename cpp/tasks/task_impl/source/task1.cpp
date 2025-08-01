@@ -1,20 +1,14 @@
 /**
-  ******************************************************************************
-  * @file           : task1.cpp
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-6-19
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : task1.cpp
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-6-19
+ ******************************************************************************
+ */
 
 #include "../include/task1.h"
-
-Task1::Task1() {
-    this->addTestCase("nums = [2,7,11,15]; target = 9", "[0,1]");
-    this->addTestCase("nums = [3,2,4]; target = 6", "[1,2]");
-    this->addTestCase("nums = [3, 3]; target = 6", "[0,1]");
-}
 
 static std::vector<int> twoSum1(const std::vector<int> &nums, int target) {
     int n = static_cast<int>(nums.size());
@@ -41,6 +35,4 @@ static std::vector<int> twoSum2(const std::vector<int> &nums, int target) {
     return {-1, -1};
 }
 
-std::vector<int> Task1::solve(const std::vector<int> &nums, int target) const {
-    return twoSum2(nums, target);
-}
+std::vector<int> LeetcodeTask1::solve(const std::vector<int> &nums, int target) const { return twoSum2(nums, target); }

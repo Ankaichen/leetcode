@@ -1,19 +1,19 @@
 /**
-  ******************************************************************************
-  * @file           : delete.hpp
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-4-20
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : delete.hpp
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-4-20
+ ******************************************************************************
+ */
 
 #ifndef LEETCODE_DELETE_HPP
 #define LEETCODE_DELETE_HPP
 
 #include <type_traits>
 
-#include "../tasks/core/forward_declaration.h"
+#include "../tasks/core/utils.h"
 
 namespace Delete {
 
@@ -28,7 +28,7 @@ namespace Delete {
             }
         }
 
-    }
+    }  // namespace _detail
 
     template<typename T>
     static void deleteValue(T &value) {
@@ -36,10 +36,10 @@ namespace Delete {
         if constexpr (!std::is_pointer_v<DeleteType>) {
             return;
         }
-        if constexpr (std::is_same_v<DeleteType, ListNode*>) {
+        if constexpr (std::is_same_v<DeleteType, ListNode *>) {
             _detail::deleteListNode(value);
         }
     }
-}
+}  // namespace Delete
 
-#endif //LEETCODE_DELETE_HPP
+#endif  // LEETCODE_DELETE_HPP
