@@ -63,6 +63,8 @@ void TestCaseReader<Res(Args...)>::forEachTestCase(TestCaseCallBack callback, Te
 template<typename Func>
 class LeetCodeTestCaseReader;
 
+#include <iostream>
+
 template<typename Res, typename... Args>
 class LeetCodeTestCaseReader<Res(Args...)> : public TestCaseReader<Res(Args...)> {
 public:
@@ -70,7 +72,8 @@ public:
     using typename TestCaseReader<Res(Args...)>::TestCaseStringCallBack;
 
 public:
-    LeetCodeTestCaseReader() = default;
+    // LeetCodeTestCaseReader() = default;
+    LeetCodeTestCaseReader() { std::cout << "LeetCodeTestCaseReader" << std::endl; };
 
     explicit LeetCodeTestCaseReader(std::string_view filePath);
 

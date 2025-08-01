@@ -1,5 +1,5 @@
-#include "initialize.h"
-#include "tasks/task_impl/include/task1.h"
+// #include "initialize.h"
+// #include "tasks/task_impl/include/task1.h"
 // #include "tasks/task_impl/include/task2.h"
 // #include "tasks/task_impl/include/task3.h"
 // #include "tasks/task_impl/include/task7.h"
@@ -93,4 +93,20 @@
 //         Task2416
 //)
 
-TASK_MAIN(LeetcodeTask1)
+// TASK_MAIN(LeetcodeTask1)
+
+#include "./tasks/core/test_case_reader.hpp"
+
+#define LEETCODE_TESTCASE_READER
+
+#if defined(LEETCODE_TESTCASE_READER)
+
+#define getReaderType(RES, ARGS...) LeetCodeTestCaseReader<RES(ARGS)>
+
+#endif
+
+int main() {
+    getReaderType(int, char, float) f1;
+
+    return 0;
+}

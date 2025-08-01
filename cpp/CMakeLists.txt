@@ -15,9 +15,9 @@ elseif (LINUX)
     add_definitions(-DPLATFORM_LINUX)
 endif ()
 
-add_subdirectory(tasks)
+# add_subdirectory(tasks)
 
 add_executable(leetcode main.cpp)
 
-target_link_libraries(leetcode tasksLib)
+# target_link_libraries(leetcode tasksLib)
 

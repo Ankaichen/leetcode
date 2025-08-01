@@ -22,6 +22,7 @@
 #include <vector>
 
 #include "../tasks/core/task_type_traits.hpp"
+#include "../tasks/core/utils.h"
 
 namespace Parse {
 
