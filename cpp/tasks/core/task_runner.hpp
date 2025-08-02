@@ -88,14 +88,15 @@ template<TypeTraits::is_task_c T>
 std::vector<std::vector<typename TaskRunner<T>::TableItem>> TaskRunner<T>::createTableData(const std::vector<TestResult> &runResult) const {
     this->_testCaseReader.setFile(this->_task.getTestCaseFilePath());
     std::vector<std::vector<TableItem>> table;
-    std::vector<TableItem> idColumn, inputColumn, expectedOutputColumn, actualOutputColumn, statusColumn;
+    std::vector<TableItem> idColumn, inputColumn, expectedOutputColumn, actualOutputColumn, spendTimeColumn, statusColumn;
     idColumn.emplace_back(ColorOut::default_fg, "Id");
     inputColumn.emplace_back(ColorOut::default_fg, "Input");
     expectedOutputColumn.emplace_back(ColorOut::default_fg, "Expected Output");
     actualOutputColumn.emplace_back(ColorOut::default_fg, "Actual Output");
+    spendTimeColumn.emplace_back(ColorOut::default_fg, "Spend Time");
     statusColumn.emplace_back(ColorOut::default_fg, "Status");
     int index = 0;
-    this->_testCaseReader.forEachTestCase(nullptr, [&idColumn, &inputColumn, &expectedOutputColumn, &actualOutputColumn, &statusColumn, &runResult,
+    this->_testCaseReader.forEachTestCase(nullptr, [&idColumn, &inputColumn, &expectedOutputColumn, &actualOutputColumn, &spendTimeColumn, &statusColumn, &runResult,
                                                     &index](const std::string &input, const std::string &output) {
         assert(index < runResult.size());
         const auto &c = runResult[index].flag ? ColorOut::green_fg : ColorOut::red_fg;
@@ -107,6 +108,10 @@ std::vector<std::vector<typename TaskRunner<T>::TableItem>> TaskRunner<T>::creat
         expectedOutputColumn.emplace_back(c, output);
         // test case actual output
         actualOutputColumn.emplace_back(c, runResult[index].output);
+        // spend time
+        std::ostringstream oss;
+        oss << std::setprecision(4) << static_cast<double>(runResult[index].spendTime.count()) * 1e-6 << " ms";
+        spendTimeColumn.emplace_back(c, oss.str());
         // status
         statusColumn.emplace_back(c, runResult[index].flag ? "Pass" : "Failed");
         ++index;
@@ -115,6 +120,7 @@ std::vector<std::vector<typename TaskRunner<T>::TableItem>> TaskRunner<T>::creat
     table.emplace_back(std::move(inputColumn));
     table.emplace_back(std::move(expectedOutputColumn));
     table.emplace_back(std::move(actualOutputColumn));
+    table.emplace_back(std::move(spendTimeColumn));
     table.emplace_back(std::move(statusColumn));
     return table;
 }
