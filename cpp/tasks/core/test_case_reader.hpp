@@ -63,8 +63,6 @@ void TestCaseReader<Res(Args...)>::forEachTestCase(TestCaseCallBack callback, Te
 template<typename Func>
 class LeetCodeTestCaseReader;
 
-#include <iostream>
-
 template<typename Res, typename... Args>
 class LeetCodeTestCaseReader<Res(Args...)> : public TestCaseReader<Res(Args...)> {
 public:
@@ -72,8 +70,7 @@ public:
     using typename TestCaseReader<Res(Args...)>::TestCaseStringCallBack;
 
 public:
-    // LeetCodeTestCaseReader() = default;
-    LeetCodeTestCaseReader() { std::cout << "LeetCodeTestCaseReader" << std::endl; };
+     LeetCodeTestCaseReader() = default;
 
     explicit LeetCodeTestCaseReader(std::string_view filePath);
 
@@ -97,6 +94,8 @@ bool LeetCodeTestCaseReader<Res(Args...)>::getNextTestCase(TestCaseCallBack call
     std::string input{}, output{};
     std::getline(this->_fileStream, input, '|');
     std::getline(this->_fileStream, output);
+    if (input.find('#') != std::string::npos || output.find('#') != std::string::npos)
+        return true;
     if (!input.empty() && !output.empty()) {
         if (stringCallback != nullptr) stringCallback(input, output);
         if (callback != nullptr) this->parseArgsAndSolve(input, output, std::index_sequence_for<Args...>{}, callback);

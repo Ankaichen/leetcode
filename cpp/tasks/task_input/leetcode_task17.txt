@@ -1,0 +1,3 @@
+digits = "23" | ["ad","ae","af","bd","be","bf","cd","ce","cf"]
+digits = ""   | []
+digits = "2"  | ["a","b","c"]

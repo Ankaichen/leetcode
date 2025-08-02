@@ -1,0 +1,4 @@
+s = "abcdefg" ; k = 2    | "bacdfeg"
+s = "abcd"    ; k = 2    | "bacd"
+s = "a"       ; k = 2    | "a"
+s = "abcdefg" ; k = 1213 | "gfedcba"

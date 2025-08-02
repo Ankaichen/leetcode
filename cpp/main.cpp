@@ -1,112 +1,94 @@
-// #include "initialize.h"
-// #include "tasks/task_impl/include/task1.h"
-// #include "tasks/task_impl/include/task2.h"
-// #include "tasks/task_impl/include/task3.h"
-// #include "tasks/task_impl/include/task7.h"
-// #include "tasks/task_impl/include/task15.h"
-// #include "tasks/task_impl/include/task17.h"
-// #include "tasks/task_impl/include/task18.h"
-// #include "tasks/task_impl/include/task19.h"
-// #include "tasks/task_impl/include/task24.h"
-// #include "tasks/task_impl/include/task27.h"
-// #include "tasks/task_impl/include/task31.h"
-// #include "tasks/task_impl/include/task39.h"
-// #include "tasks/task_impl/include/task40.h"
-// #include "tasks/task_impl/include/task59.h"
-// #include "tasks/task_impl/include/task62.h"
-// #include "tasks/task_impl/include/task63.h"
-// #include "tasks/task_impl/include/task70.h"
-// #include "tasks/task_impl/include/task77.h"
-// #include "tasks/task_impl/include/task96.h"
-// #include "tasks/task_impl/include/task128.h"
-// #include "tasks/task_impl/include/task130.h"
-// #include "tasks/task_impl/include/task142.h"
-// #include "tasks/task_impl/include/task151.h"
-// #include "tasks/task_impl/include/task202.h"
-// #include "tasks/task_impl/include/task203.h"
-// #include "tasks/task_impl/include/task206.h"
-// #include "tasks/task_impl/include/task209.h"
-// #include "tasks/task_impl/include/task216.h"
-// #include "tasks/task_impl/include/task242.h"
-// #include "tasks/task_impl/include/task290.h"
-// #include "tasks/task_impl/include/task343.h"
-// #include "tasks/task_impl/include/task344.h"
-// #include "tasks/task_impl/include/task349.h"
-// #include "tasks/task_impl/include/task383.h"
-// #include "tasks/task_impl/include/task416.h"
-// #include "tasks/task_impl/include/task454.h"
-// #include "tasks/task_impl/include/task455.h"
-// #include "tasks/task_impl/include/task509.h"
-// #include "tasks/task_impl/include/task541.h"
-// #include "tasks/task_impl/include/task556.h"
-// #include "tasks/task_impl/include/task704.h"
-// #include "tasks/task_impl/include/task746.h"
-// #include "tasks/task_impl/include/task977.h"
-// #include "tasks/task_impl/include/task1049.h"
-// #include "tasks/task_impl/include/task2416.h"
+#include "initialize.h"
+#include "tasks/task_impl/include/leetcode_task1.h"
+#include "tasks/task_impl/include/leetcode_task2.h"
+#include "tasks/task_impl/include/leetcode_task3.h"
+#include "tasks/task_impl/include/leetcode_task7.h"
+#include "tasks/task_impl/include/leetcode_task15.h"
+#include "tasks/task_impl/include/leetcode_task17.h"
+#include "tasks/task_impl/include/leetcode_task18.h"
+#include "tasks/task_impl/include/leetcode_task19.h"
+#include "tasks/task_impl/include/leetcode_task24.h"
+#include "tasks/task_impl/include/leetcode_task27.h"
+#include "tasks/task_impl/include/leetcode_task31.h"
+#include "tasks/task_impl/include/leetcode_task39.h"
+#include "tasks/task_impl/include/leetcode_task40.h"
+#include "tasks/task_impl/include/leetcode_task59.h"
+#include "tasks/task_impl/include/leetcode_task62.h"
+#include "tasks/task_impl/include/leetcode_task63.h"
+#include "tasks/task_impl/include/leetcode_task70.h"
+#include "tasks/task_impl/include/leetcode_task77.h"
+#include "tasks/task_impl/include/leetcode_task96.h"
+#include "tasks/task_impl/include/leetcode_task128.h"
+#include "tasks/task_impl/include/leetcode_task130.h"
+#include "tasks/task_impl/include/leetcode_task142.h"
+#include "tasks/task_impl/include/leetcode_task151.h"
+#include "tasks/task_impl/include/leetcode_task202.h"
+#include "tasks/task_impl/include/leetcode_task203.h"
+#include "tasks/task_impl/include/leetcode_task206.h"
+#include "tasks/task_impl/include/leetcode_task209.h"
+#include "tasks/task_impl/include/leetcode_task216.h"
+#include "tasks/task_impl/include/leetcode_task242.h"
+#include "tasks/task_impl/include/leetcode_task290.h"
+#include "tasks/task_impl/include/leetcode_task343.h"
+#include "tasks/task_impl/include/leetcode_task344.h"
+#include "tasks/task_impl/include/leetcode_task349.h"
+#include "tasks/task_impl/include/leetcode_task383.h"
+#include "tasks/task_impl/include/leetcode_task416.h"
+#include "tasks/task_impl/include/leetcode_task454.h"
+#include "tasks/task_impl/include/leetcode_task455.h"
+#include "tasks/task_impl/include/leetcode_task509.h"
+#include "tasks/task_impl/include/leetcode_task541.h"
+#include "tasks/task_impl/include/leetcode_task556.h"
+#include "tasks/task_impl/include/leetcode_task704.h"
+#include "tasks/task_impl/include/leetcode_task746.h"
+#include "tasks/task_impl/include/leetcode_task977.h"
+#include "tasks/task_impl/include/leetcode_task1049.h"
+#include "tasks/task_impl/include/leetcode_task2416.h"
 
-// TASK_MAIN(
-//         Task1,
-//         Task2,
-//         Task3,
-//         Task7,
-//         Task15,
-//         Task17,
-//         Task18,
-//         Task19,
-//         Task24,
-//         Task27,
-//         Task31,
-//         Task39,
-//         Task40,
-//         Task59,
-//         Task62,
-//         Task63,
-//         Task70,
-//         Task77,
-//         Task96,
-//         Task128,
-//         Task130,
-//         Task142,
-//         Task151,
-//         Task202,
-//         Task203,
-//         Task206,
-//         Task209,
-//         Task216,
-//         Task242,
-//         Task290,
-//         Task343,
-//         Task344,
-//         Task349,
-//         Task383,
-//         Task416,
-//         Task454,
-//         Task455,
-//         Task509,
-//         Task541,
-//         Task556,
-//         Task704,
-//         Task746,
-//         Task977,
-//         Task1049,
-//         Task2416
-//)
-
-// TASK_MAIN(LeetcodeTask1)
-
-#include "./tasks/core/test_case_reader.hpp"
-
-#define LEETCODE_TESTCASE_READER
-
-#if defined(LEETCODE_TESTCASE_READER)
-
-#define getReaderType(RES, ARGS...) LeetCodeTestCaseReader<RES(ARGS)>
-
-#endif
-
-int main() {
-    getReaderType(int, char, float) f1;
-
-    return 0;
-}
+TASK_MAIN(
+        LeetcodeTask1,
+        LeetcodeTask2,
+        LeetcodeTask3,
+        LeetcodeTask7,
+        LeetcodeTask15,
+        LeetcodeTask17,
+        LeetcodeTask18,
+        LeetcodeTask19,
+        LeetcodeTask24,
+        LeetcodeTask27,
+        LeetcodeTask31,
+        LeetcodeTask39,
+        LeetcodeTask40,
+        LeetcodeTask59,
+        LeetcodeTask62,
+        LeetcodeTask63,
+        LeetcodeTask70,
+        LeetcodeTask77,
+        LeetcodeTask96,
+        LeetcodeTask128,
+        LeetcodeTask130,
+        LeetcodeTask142,
+        LeetcodeTask151,
+        LeetcodeTask202,
+        LeetcodeTask203,
+        LeetcodeTask206,
+        LeetcodeTask209,
+        LeetcodeTask216,
+        LeetcodeTask242,
+        LeetcodeTask290,
+        LeetcodeTask343,
+        LeetcodeTask344,
+        LeetcodeTask349,
+        LeetcodeTask383,
+        LeetcodeTask416,
+        LeetcodeTask454,
+        LeetcodeTask455,
+        LeetcodeTask509,
+        LeetcodeTask541,
+        LeetcodeTask556,
+        LeetcodeTask704,
+        LeetcodeTask746,
+        LeetcodeTask977,
+        LeetcodeTask1049,
+        LeetcodeTask2416
+)

@@ -36,7 +36,7 @@ namespace TypeTraits {
     using vector_value_t = is_vector<T>::value_type;
 
     template<typename T>
-    concept vector_c = is_vector_v<T>;
+    concept is_vector_c = is_vector_v<T>;
 
     template<typename T>
     struct is_set : public std::false_type {};
@@ -72,10 +72,10 @@ namespace TypeTraits {
     using set_value_t = is_set<T>::value_type;
 
     template<typename T>
-    concept set_c = is_set_v<T>;
+    concept is_set_c = is_set_v<T>;
 
     template<typename T>
-    concept container_c = requires(T a) {
+    concept is_container_c = requires(T a) {
         { std::begin(a) } -> std::input_iterator;
         { std::end(a) } -> std::sentinel_for<decltype(std::begin(a))>;
     };
@@ -84,7 +84,7 @@ namespace TypeTraits {
     struct is_container : public std::false_type {};
 
     template<typename T>
-    requires container_c<T>
+    requires is_container_c<T>
     struct is_container<T> : public std::true_type {};
 
     template<typename T>

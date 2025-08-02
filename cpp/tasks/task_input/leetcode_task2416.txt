@@ -1,0 +1,2 @@
+words = ["abc","ab","bc","b"] | [5,4,3,2]
+words = ["abcd"]              | [4]

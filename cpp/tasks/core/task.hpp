@@ -113,10 +113,11 @@ inline std::vector<TestResult> Task<Name, Reader, Processor, Res(Args...)>::test
                 std::cerr << "An error occurred in the test case:" << std::endl << "\t" << oss.str() << std::endl << "\t" << e.what() << std::endl;
                 exit(-1);
             }
+            std::string solveResultString = Parse::toString<Res>(solveResult);
             ProcessedResultType processedSolveResult = this->_testResultProcessor.processResult(solveResult);
             ProcessedResultType processedResult = this->_testResultProcessor.processResult(res);
             bool resultFlag = Compare::compare(processedSolveResult, processedResult);
-            testResult.emplace_back(resultFlag, Parse::toString<Res>(solveResult));
+            testResult.emplace_back(resultFlag, solveResultString);
             Delete::deleteValue(solveResult);
             Delete::deleteValue(res);
             Delete::deleteValue(processedSolveResult);

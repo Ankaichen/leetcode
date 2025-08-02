@@ -1,0 +1,2 @@
+n = 19 | true
+n = 2  | false

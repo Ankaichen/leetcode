@@ -31,6 +31,13 @@ namespace Parse {
 
     namespace _detail {
 
+//        void trim(std::string &s) {
+//            if (!s.empty()) {
+//                s.erase(0, s.find_first_not_of(" "));
+//                s.erase(s.find_last_not_of(" ") + 1);
+//            }
+//        }
+
         template<unsigned int Index>
         static std::string stringSlice(const std::string &input) {
             int sliceIndex{-1};
@@ -73,7 +80,7 @@ namespace Parse {
             } else if constexpr (std::is_same_v<T, double>) {
                 return std::stod(input);
             } else if constexpr (std::is_same_v<T, bool>) {
-                if (input == "true")
+                if (input.find("true") != std::string::npos)
                     return true;
                 else
                     return false;
@@ -126,7 +133,7 @@ namespace Parse {
             using ValType = decltype(std::declval<ListNode>().val);
             std::vector<ValType> vec = parseVector<std::vector<ValType>>(input);
             ListNode *p = nullptr, *q = nullptr;
-            for (int i : std::ranges::reverse_view(vec)) {
+            for (int i: std::ranges::reverse_view(vec)) {
                 q = new ListNode(i, p);
                 p = q;
             }
@@ -202,6 +209,7 @@ namespace Parse {
     template<typename T>
     static std::remove_cvref_t<T> parseType(const std::string &input) {
         using ParseType = std::remove_cvref_t<T>;
+//        _detail::trim(const_cast<std::string&>(input));
         if constexpr (std::is_arithmetic_v<ParseType>) {
             return _detail::parseValue<ParseType>(input);
         } else if constexpr (TypeTraits::is_container_v<ParseType>) {
