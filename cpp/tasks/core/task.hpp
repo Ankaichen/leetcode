@@ -107,19 +107,19 @@ inline std::vector<TestResult> Task<Name, Reader, Processor, Res(Args...)>::test
     std::vector<TestResult> testResult{};
     this->_testCaseReader.forEachTestCase(
             [this, &testResult](Res res, Args... args) -> void {
-                Res solveResult{};
+//                Res solveResult{};
                 std::chrono::nanoseconds spendTime{};
-                try {
-                    auto startTime = std::chrono::high_resolution_clock::now();
-                    solveResult = this->solve(args...);
-                    spendTime = std::chrono::high_resolution_clock::now() - startTime;
-                } catch (const std::exception &e) {
-                    std::ostringstream oss;
-                    ((oss << Parse::toString<Args>(args) << "; "), ...);
-                    std::cerr << "An error occurred in the test case:" << std::endl << "\t" << oss.str() << std::endl
-                              << "\t" << e.what() << std::endl;
-                    exit(-1);
-                }
+//                try {
+                auto startTime = std::chrono::high_resolution_clock::now();
+                Res solveResult = this->solve(args...);
+                spendTime = std::chrono::high_resolution_clock::now() - startTime;
+//                } catch (const std::exception &e) {
+//                    std::ostringstream oss;
+//                    ((oss << Parse::toString<Args>(args) << "; "), ...);
+//                    std::cerr << "An error occurred in the test case:" << std::endl << "\t" << oss.str() << std::endl
+//                              << "\t" << e.what() << std::endl;
+//                    exit(-1);
+//                }
                 std::string solveResultString = Parse::toString<Res>(solveResult);
                 ProcessedResultType processedSolveResult = this->_testResultProcessor.processResult(solveResult);
                 ProcessedResultType processedResult = this->_testResultProcessor.processResult(res);

@@ -90,6 +90,13 @@ namespace TypeTraits {
     template<typename T>
     constexpr bool is_container_v = is_container<T>::value;
 
+    template<typename T>
+    using clean_type_t = std::conditional_t<
+            std::is_same_v<std::remove_cvref_t<T>, std::ostringstream>,
+            T,
+            std::remove_cvref_t<T>
+    >;
+
 }  // namespace TypeTraits
 
 template<typename Func>

@@ -13,14 +13,19 @@
 #else
 
 // using_LeetCodeTestCaseReader
+// using_ACMTestCaseReader
 
 #ifdef using_LeetCodeTestCaseReader
 #define getReaderType(RES, ARGS...) LeetCodeTestCaseReader<RES(ARGS)>
+#endif
+#ifdef using_ACMTestCaseReader
+#define getReaderType(RES, ARGS...) ACMTestCaseReader
 #endif
 
 // using_NormalTestResultProcessor
 // using_ListNodeTestResultProcessor
 // using_UnorderedTestResultProcessor
+// using_ACMTestResultProcessor
 
 #ifdef using_NormalTestResultProcessor
 #define getProcessorType(RES) NormalTestResultProcessor<RES>
@@ -30,6 +35,9 @@
 #endif
 #ifdef using_UnorderedTestResultProcessor
 #define getProcessorType(RES) UnorderedTestResultProcessor<RES>
+#endif
+#ifdef using_ACMTestResultProcessor
+#define getProcessorType(RES) ACMTestResultProcessor
 #endif
 
 //#ifdef using_NormalTestResultProcessor

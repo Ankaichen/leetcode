@@ -273,6 +273,8 @@ namespace Parse {
                 p = p->next;
             }
             return toString(vec);
+        } else if constexpr (std::is_same_v<ParseType, std::ostringstream>) {
+            return value.str();
         }
     }
 

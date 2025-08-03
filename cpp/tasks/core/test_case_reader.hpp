@@ -70,7 +70,7 @@ public:
     using typename TestCaseReader<Res(Args...)>::TestCaseStringCallBack;
 
 public:
-     LeetCodeTestCaseReader() = default;
+    LeetCodeTestCaseReader() = default;
 
     explicit LeetCodeTestCaseReader(std::string_view filePath);
 
@@ -80,17 +80,20 @@ public:
 
 private:
     template<std::size_t... IS>
-    void parseArgsAndSolve(const std::string &input, const std::string &output, std::index_sequence<IS...>, TestCaseCallBack callback) const;
+    void parseArgsAndSolve(const std::string &input, const std::string &output, std::index_sequence<IS...>,
+                           TestCaseCallBack callback) const;
 };
 
 template<typename Res, typename... Args>
-LeetCodeTestCaseReader<Res(Args...)>::LeetCodeTestCaseReader(std::string_view filePath) : TestCaseReader<Res(Args...)>{filePath} {}
+LeetCodeTestCaseReader<Res(Args...)>::LeetCodeTestCaseReader(std::string_view filePath) : TestCaseReader<Res(Args...)>{
+        filePath} {}
 
 template<typename Res, typename... Args>
 LeetCodeTestCaseReader<Res(Args...)>::~LeetCodeTestCaseReader() noexcept = default;
 
 template<typename Res, typename... Args>
-bool LeetCodeTestCaseReader<Res(Args...)>::getNextTestCase(TestCaseCallBack callback, TestCaseStringCallBack stringCallback) {
+bool LeetCodeTestCaseReader<Res(Args...)>::getNextTestCase(TestCaseCallBack callback,
+                                                           TestCaseStringCallBack stringCallback) {
     std::string input{}, output{};
     std::getline(this->_fileStream, input, '|');
     std::getline(this->_fileStream, output);
@@ -106,9 +109,26 @@ bool LeetCodeTestCaseReader<Res(Args...)>::getNextTestCase(TestCaseCallBack call
 
 template<typename Res, typename... Args>
 template<std::size_t... IS>
-void LeetCodeTestCaseReader<Res(Args...)>::parseArgsAndSolve(const std::string &input, const std::string &output, std::index_sequence<IS...>,
+void LeetCodeTestCaseReader<Res(Args...)>::parseArgsAndSolve(const std::string &input, const std::string &output,
+                                                             std::index_sequence<IS...>,
                                                              TestCaseCallBack callback) const {
     callback(Parse::parseType<Res>(output), Parse::parseTypeByIndex<IS, Args>(input)...);
 }
+
+class ACMTestCaseReader : public TestCaseReader<std::ostringstream&(std::istringstream&)> {
+public:
+    using typename TestCaseReader<std::ostringstream&(std::istringstream&)>::TestCaseCallBack;
+    using typename TestCaseReader<std::ostringstream&(std::istringstream&)>::TestCaseStringCallBack;
+
+public:
+    ACMTestCaseReader() = default;
+
+    explicit ACMTestCaseReader(std::string_view filePath) : TestCaseReader<std::ostringstream&(std::istringstream&)>{filePath} {}
+
+    ~ACMTestCaseReader() noexcept override = default;
+
+    bool getNextTestCase(TestCaseCallBack callback, TestCaseStringCallBack stringCallback) override;
+};
+
 
 #endif  // LEETCODE_TEST_CASE_READER_HPP

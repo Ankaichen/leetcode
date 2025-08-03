@@ -18,8 +18,8 @@
 template<typename InputRes, typename OutputRes>
 class TestResultProcessor {
 protected:
-    using CleanInputType = std::remove_cvref_t<InputRes>;
-    using CleanOutputType = std::remove_cvref_t<OutputRes>;
+    using CleanInputType = TypeTraits::clean_type_t<InputRes>;
+    using CleanOutputType = TypeTraits::clean_type_t<OutputRes>;
 
 public:
     TestResultProcessor() = default;
@@ -90,7 +90,7 @@ template<typename T>
 std::remove_cvref_t<T> UnorderedTestResultProcessor<InputRes>::processItem(const T &input) const {
     if constexpr (TypeTraits::is_vector_v<T>) {
         std::multiset<TypeTraits::vector_value_t<T>> resSet{};
-        for (auto v : input) {
+        for (auto v: input) {
             resSet.insert(this->processItem(v));
         }
         return std::vector<TypeTraits::vector_value_t<T>>{resSet.begin(), resSet.end()};
@@ -98,5 +98,17 @@ std::remove_cvref_t<T> UnorderedTestResultProcessor<InputRes>::processItem(const
         return input;
     }
 }
+
+class ACMTestResultProcessor : public TestResultProcessor<std::ostringstream&, std::ostringstream&> {
+    using typename TestResultProcessor<std::ostringstream&, std::ostringstream&>::CleanInputType;
+    using typename TestResultProcessor<std::ostringstream&, std::ostringstream&>::CleanOutputType;
+
+public:
+    ACMTestResultProcessor() = default;
+
+    ~ACMTestResultProcessor() noexcept override = default;
+
+    [[nodiscard]] CleanOutputType processResult(CleanInputType &input) const override;
+};
 
 #endif  // LEETCODE_TEST_RESULT_PROCESSOR_HPP
