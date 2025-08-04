@@ -10,11 +10,11 @@
 #ifndef LEETCODE_TASK_HPP
 #define LEETCODE_TASK_HPP
 
+#include <chrono>
 #include <functional>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <chrono>
 
 #include "../../utils/compare.hpp"
 #include "../../utils/delete.hpp"
@@ -48,8 +48,7 @@ class Task<Name, Reader, Processor, Res(Args...)> {
     static_assert(TypeTraits::is_task_fit_c<Task<Name, Reader, Processor, Res(Args...)>, Reader, Processor>);
 
     template<TypeTraits::is_task_c T>
-    friend
-    class TaskRunner;
+    friend class TaskRunner;
 
 public:
     Task() = default;
@@ -106,31 +105,31 @@ inline std::vector<TestResult> Task<Name, Reader, Processor, Res(Args...)>::test
     using ProcessedResultType = decltype(this->_testResultProcessor.processResult(std::declval<Res>()));
     std::vector<TestResult> testResult{};
     this->_testCaseReader.forEachTestCase(
-            [this, &testResult](Res res, Args... args) -> void {
-//                Res solveResult{};
-                std::chrono::nanoseconds spendTime{};
-//                try {
-                auto startTime = std::chrono::high_resolution_clock::now();
-                Res solveResult = this->solve(args...);
-                spendTime = std::chrono::high_resolution_clock::now() - startTime;
-//                } catch (const std::exception &e) {
-//                    std::ostringstream oss;
-//                    ((oss << Parse::toString<Args>(args) << "; "), ...);
-//                    std::cerr << "An error occurred in the test case:" << std::endl << "\t" << oss.str() << std::endl
-//                              << "\t" << e.what() << std::endl;
-//                    exit(-1);
-//                }
-                std::string solveResultString = Parse::toString<Res>(solveResult);
-                ProcessedResultType processedSolveResult = this->_testResultProcessor.processResult(solveResult);
-                ProcessedResultType processedResult = this->_testResultProcessor.processResult(res);
-                bool resultFlag = Compare::compare(processedSolveResult, processedResult);
-                testResult.emplace_back(resultFlag, solveResultString, spendTime);
-                Delete::deleteValue(solveResult);
-                Delete::deleteValue(res);
-                Delete::deleteValue(processedSolveResult);
-                Delete::deleteValue(processedResult);
-            },
-            nullptr);
+        [this, &testResult](Res res, Args... args) -> void {
+            // Res solveResult{};
+            std::chrono::nanoseconds spendTime{};
+            // try {
+            auto startTime = std::chrono::high_resolution_clock::now();
+            Res solveResult = this->solve(args...);
+            spendTime = std::chrono::high_resolution_clock::now() - startTime;
+            // } catch (const std::exception &e) {
+            // std::ostringstream oss;
+            // ((oss << Parse::toString<Args>(args) << "; "), ...);
+            // std::cerr << "An error occurred in the test case:" << std::endl << "\t" << oss.str() << std::endl << "\t" << e.what() << std::endl;
+            // exit(-1);
+            // }
+            std::string solveResultString = Parse::toString<Res>(solveResult);
+            ProcessedResultType processedSolveResult = this->_testResultProcessor.processResult(solveResult);
+            ProcessedResultType processedResult = this->_testResultProcessor.processResult(res);
+            bool resultFlag = Compare::compare(processedSolveResult, processedResult);
+            if (std::chrono::duration_cast<std::chrono::milliseconds>(spendTime).count() > 0) resultFlag = false;
+            testResult.emplace_back(resultFlag, solveResultString, spendTime);
+            Delete::deleteValue(solveResult);
+            Delete::deleteValue(res);
+            Delete::deleteValue(processedSolveResult);
+            Delete::deleteValue(processedResult);
+        },
+        nullptr);
     return testResult;
 }
 

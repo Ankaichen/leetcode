@@ -1,7 +1,6 @@
 # file(GLOB_RECURSE TASKS task_impl/source/*.cpp)
 file(GLOB_RECURSE CORE core/*.cpp)
-#file(GLOB_RECURSE TASKS task_impl/source/*.cpp)
-file(GLOB_RECURSE TASKS task_impl/source/kama*.cpp)
+file(GLOB_RECURSE TASKS task_impl/source/*.cpp)
 
 file(GLOB TASK_INPUT
         ${CMAKE_CURRENT_SOURCE_DIR}/task_input)

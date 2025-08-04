@@ -11,6 +11,7 @@
 #ifndef LEETCODE_TASK_RUNNER_HPP
 #define LEETCODE_TASK_RUNNER_HPP
 
+#include <algorithm>
 #include <cassert>
 #include <iomanip>
 #include <iostream>
@@ -63,6 +64,8 @@ private:
     static inline void printLine(const std::vector<size_t> &widths, std::string_view corner_left, std::string_view corner_mid,
                                  std::string_view corner_right, std::string_view horiz, const ColorOut::TextStyle &textStyle = ColorOut::default_fg);
 
+    static inline std::vector<std::vector<TableItem>> processMultiLine(const std::vector<std::vector<TableItem>> &table);
+
     static inline void printTable(const std::vector<std::vector<TableItem>> &table, const ColorOut::TextStyle &lineColor = ColorOut::default_fg);
 
 private:
@@ -80,7 +83,7 @@ template<TypeTraits::is_task_c T>
 void TaskRunner<T>::run() const {
     std::cout << this->_task.title() << std::endl;
     std::vector<TestResult> result = this->_task.test();
-    std::vector<std::vector<TableItem>> table = this->createTableData(result);
+    std::vector<std::vector<TableItem>> table = this->processMultiLine(this->createTableData(result));
     printTable(table, ColorOut::white_fg);
 }
 
@@ -96,8 +99,8 @@ std::vector<std::vector<typename TaskRunner<T>::TableItem>> TaskRunner<T>::creat
     spendTimeColumn.emplace_back(ColorOut::default_fg, "Spend Time");
     statusColumn.emplace_back(ColorOut::default_fg, "Status");
     int index = 0;
-    this->_testCaseReader.forEachTestCase(nullptr, [&idColumn, &inputColumn, &expectedOutputColumn, &actualOutputColumn, &spendTimeColumn, &statusColumn, &runResult,
-                                                    &index](const std::string &input, const std::string &output) {
+    this->_testCaseReader.forEachTestCase(nullptr, [&idColumn, &inputColumn, &expectedOutputColumn, &actualOutputColumn, &spendTimeColumn,
+                                                    &statusColumn, &runResult, &index](const std::string &input, const std::string &output) {
         assert(index < runResult.size());
         const auto &c = runResult[index].flag ? ColorOut::green_fg : ColorOut::red_fg;
         // id
@@ -147,6 +150,31 @@ void TaskRunner<T>::printLine(const std::vector<size_t> &widths, std::string_vie
         if (i + 1 < widths.size()) std::cout << corner_mid;
     }
     std::cout << corner_right << ColorOut::reset << "\n";
+}
+
+template<TypeTraits::is_task_c T>
+std::vector<std::vector<typename TaskRunner<T>::TableItem>> TaskRunner<T>::processMultiLine(const std::vector<std::vector<TableItem>> &table) {
+    unsigned int colCount = table.size();
+    unsigned int rowCount = table[0].size();
+    std::vector<std::vector<TableItem>> resTable{colCount, std::vector<TableItem>{}};
+    for (unsigned int i = 0; i < rowCount; ++i) {
+        int maxLineCount = 0;
+        for (unsigned int j = 0; j < colCount; ++j) {
+            maxLineCount = std::max(static_cast<int>(std::count(table[j][i].value.begin(), table[j][i].value.end(), '\n')) + 1, maxLineCount);
+        }
+        for (unsigned int j = 0; j < colCount; ++j) {
+            std::vector<TableItem> newCol{};
+            std::istringstream iss{table[j][i].value};
+            std::string temp{};
+            for (int k = 0; k < maxLineCount; ++k) {
+                std::getline(iss, temp, '\n');
+                newCol.emplace_back(table[j][i].color, temp);
+                temp.clear();
+            }
+            resTable[j].insert(resTable[j].end(), std::make_move_iterator(newCol.begin()), std::make_move_iterator(newCol.end()));
+        }
+    }
+    return resTable;
 }
 
 template<TypeTraits::is_task_c T>
