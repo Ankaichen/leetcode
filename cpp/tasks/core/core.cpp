@@ -1,25 +1,24 @@
 /**
-  ******************************************************************************
-  * @file           : core.cpp
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-8-2
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : core.cpp
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-8-2
+ ******************************************************************************
+ */
 
 #include "./test_case_reader.hpp"
 #include "./test_result_processor.hpp"
 
-bool ACMTestCaseReader::getNextTestCase(
-        TestCaseReader<std::ostringstream&(std::istringstream&)>::TestCaseCallBack callback,
-        TestCaseReader<std::ostringstream&(std::istringstream&)>::TestCaseStringCallBack stringCallback) {
+bool ACMTestCaseReader::getNextTestCase(TestCaseReader<std::ostringstream &(std::istringstream &)>::TestCaseCallBack callback,
+                                        TestCaseReader<std::ostringstream &(std::istringstream &)>::TestCaseStringCallBack stringCallback) {
     std::string line{};
     std::ostringstream iss{}, oss{};
     bool isI = true;
-    while (std::getline(this->_fileStream, line)) {
-        if (line.find('#') != std::string::npos)
-            break;
+    while (std::getline(this->_fileStream, line, '\n')) {
+        line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+        if (line.find('#') != std::string::npos) break;
         if (line == ">>") {
             isI = true;
             continue;
@@ -40,19 +39,16 @@ bool ACMTestCaseReader::getNextTestCase(
         std::string ossStr{oss.str()}, issStr{iss.str()};
         ossStr.pop_back();
         issStr.pop_back();
-        stringCallback(ossStr, issStr);
+        stringCallback(issStr, ossStr);
     }
-    return this->_fileStream.eof();
+    return !this->_fileStream.eof();
 }
 
 ListNodeTestResultProcessor::CleanOutputType ListNodeTestResultProcessor::processResult(
-        const ListNodeTestResultProcessor::CleanInputType &input) const {
+    const ListNodeTestResultProcessor::CleanInputType &input) const {
     CleanOutputType output = input;
     const_cast<CleanInputType &>(input) = nullptr;
     return output;
 }
 
-ACMTestResultProcessor::CleanOutputType
-ACMTestResultProcessor::processResult(CleanInputType &input) const {
-    return input;
-}
+ACMTestResultProcessor::CleanOutputType ACMTestResultProcessor::processResult(CleanInputType &input) const { return input; }
