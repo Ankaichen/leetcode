@@ -14,7 +14,12 @@
 #include "./test_case_reader.hpp"
 #include "./test_result_processor.hpp"
 
+
+#ifdef PLATFORM_WINDOWS
+static std::size_t maxCellWidth = 25;
+#else
 static std::size_t maxCellWidth = 35;
+#endif
 
 // 删除范围内指定字符
 std::size_t trimCharInRange(std::string &s, std::string::size_type begin, std::string::size_type end, char c) {
