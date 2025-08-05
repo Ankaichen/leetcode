@@ -91,13 +91,18 @@ LeetCodeTestCaseReader<Res(Args...)>::~LeetCodeTestCaseReader() noexcept = defau
 
 template<typename Res, typename... Args>
 bool LeetCodeTestCaseReader<Res(Args...)>::getNextTestCase(TestCaseCallBack callback, TestCaseStringCallBack stringCallback) {
+    void formatInputOutputString(std::string & input, std::string & output);
     std::string input{}, output{};
     std::getline(this->_fileStream, input, '|');
     std::getline(this->_fileStream, output, '\n');
     output.erase(std::remove(output.begin(), output.end(), '\r'), output.end());
     if (input.find('#') != std::string::npos || output.find('#') != std::string::npos) return true;
     if (!input.empty() && !output.empty()) {
-        if (stringCallback != nullptr) stringCallback(input, output);
+        if (stringCallback != nullptr) {
+            formatInputOutputString(input, output);
+            stringCallback(input, output);
+        }
+
         if (callback != nullptr) this->parseArgsAndSolve(input, output, std::index_sequence_for<Args...>{}, callback);
         return true;
     }

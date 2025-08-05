@@ -189,8 +189,8 @@ void TaskRunner<T>::printTable(const std::vector<std::vector<TableItem>> &table,
         for (unsigned int j = 0; j < colCount; ++j) {
             size_t w = widths[j];
             const TableItem &item = table[j][i];
-            std::cout << item.color << ' ' << std::right << std::setw(static_cast<int>(w - 2)) << item.value << ColorOut::reset << ' ' << lineColor
-                      << "│" << ColorOut::reset;
+            std::cout << item.color << ' ' << (j >= 1 && j <= 3 ? std::left : std::right) << std::setw(static_cast<int>(w - 2)) << item.value
+                      << ColorOut::reset << ' ' << lineColor << "│" << ColorOut::reset;
         }
         std::cout << "\n";
     }
