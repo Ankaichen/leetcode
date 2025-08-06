@@ -102,21 +102,36 @@ std::vector<std::vector<typename TaskRunner<T>::TableItem>> TaskRunner<T>::creat
     this->_testCaseReader.forEachTestCase(nullptr, [&idColumn, &inputColumn, &expectedOutputColumn, &actualOutputColumn, &spendTimeColumn,
                                                     &statusColumn, &runResult, &index](const std::string &input, const std::string &output) {
         assert(index < runResult.size());
-        const auto &c = runResult[index].flag ? ColorOut::green_fg : ColorOut::red_fg;
+        const ColorOut::TextStyle *c;
+        std::string status{};
+        switch (runResult[index].status) {
+            case TestResult::PASS:
+                c = &ColorOut::green_fg;
+                status = "Pass";
+                break;
+            case TestResult::FAILED:
+                c = &ColorOut::red_fg;
+                status = "Failed";
+                break;
+            case TestResult::TIME_LIMIT_EXCEEDED:
+                c = &ColorOut::yellow_fg;
+                status = "Time Limit Exceeded";
+                break;
+        }
         // id
-        idColumn.emplace_back(c, std::to_string(index + 1));
+        idColumn.emplace_back(*c, std::to_string(index + 1));
         // test case input
-        inputColumn.emplace_back(c, input);
+        inputColumn.emplace_back(*c, input);
         // test case expected
-        expectedOutputColumn.emplace_back(c, output);
+        expectedOutputColumn.emplace_back(*c, output);
         // test case actual output
-        actualOutputColumn.emplace_back(c, runResult[index].output);
+        actualOutputColumn.emplace_back(*c, runResult[index].output);
         // spend time
         std::ostringstream oss;
         oss << std::setprecision(4) << static_cast<double>(runResult[index].spendTime.count()) * 1e-6 << " ms";
-        spendTimeColumn.emplace_back(c, oss.str());
+        spendTimeColumn.emplace_back(*c, oss.str());
         // status
-        statusColumn.emplace_back(c, runResult[index].flag ? "Pass" : "Failed");
+        statusColumn.emplace_back(*c, status);
         ++index;
     });
     table.emplace_back(std::move(idColumn));

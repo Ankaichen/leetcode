@@ -29,7 +29,8 @@
  * output: the output result
  */
 struct TestResult {
-    bool flag{};
+    enum ResultStatus { PASS, FAILED, TIME_LIMIT_EXCEEDED };
+    ResultStatus status{};
     std::string output;
     std::chrono::nanoseconds spendTime{};
 };
@@ -125,8 +126,11 @@ inline std::vector<TestResult> Task<Name, Reader, Processor, Res(Args...)>::test
             ProcessedResultType processedSolveResult = this->_testResultProcessor.processResult(solveResult);
             ProcessedResultType processedResult = this->_testResultProcessor.processResult(res);
             bool resultFlag = Compare::compare(processedSolveResult, processedResult);
-            if (std::chrono::duration_cast<std::chrono::milliseconds>(spendTime).count() > 0) resultFlag = false;
-            testResult.emplace_back(resultFlag, solveResultString, spendTime);
+            TestResult::ResultStatus resultStatus{resultFlag ? TestResult::PASS : TestResult::FAILED};
+            if (resultFlag && std::chrono::duration_cast<std::chrono::milliseconds>(spendTime).count() > 100) {
+                resultStatus = TestResult::TIME_LIMIT_EXCEEDED;
+            }
+            testResult.emplace_back(resultStatus, solveResultString, spendTime);
             Delete::deleteValue(solveResult);
             Delete::deleteValue(res);
             Delete::deleteValue(processedSolveResult);
