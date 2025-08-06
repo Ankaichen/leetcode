@@ -14,7 +14,6 @@
 #include "./test_case_reader.hpp"
 #include "./test_result_processor.hpp"
 
-
 #ifdef PLATFORM_WINDOWS
 static std::size_t maxCellWidth = 25;
 #else
@@ -45,7 +44,7 @@ void wrapLines(std::string &s) {
             maxEnd = lineStart + (maxCellWidth - indent);
         }
 
-        if (maxEnd >= s.size()) break;
+        if (maxEnd >= s.size() - 1) break;
 
         int breakPos = static_cast<int>(s.rfind(',', maxEnd));
         int bracketLeftPos = static_cast<int>(s.rfind('[', maxEnd));
