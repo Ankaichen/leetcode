@@ -35,6 +35,7 @@
 #include "tasks/task_impl/include/leetcode_task454.h"
 #include "tasks/task_impl/include/leetcode_task455.h"
 #include "tasks/task_impl/include/leetcode_task509.h"
+#include "tasks/task_impl/include/leetcode_task53.h"
 #include "tasks/task_impl/include/leetcode_task541.h"
 #include "tasks/task_impl/include/leetcode_task556.h"
 #include "tasks/task_impl/include/leetcode_task59.h"
@@ -48,6 +49,6 @@
 #include "tasks/task_impl/include/leetcode_task96.h"
 #include "tasks/task_impl/include/leetcode_task977.h"
 
-TASK_MAIN(LeetcodeTask215)
+TASK_MAIN(LeetcodeTask53)
 
 // TASK_MAIN(KamacoderTask46)
