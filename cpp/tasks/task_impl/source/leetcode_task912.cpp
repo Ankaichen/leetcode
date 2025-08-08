@@ -1,12 +1,12 @@
 /**
-  ******************************************************************************
-  * @file           : leetcode_task912.cpp
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-8-7
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : leetcode_task912.cpp
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-8-7
+ ******************************************************************************
+ */
 
 #include "../include/leetcode_task912.h"
 
@@ -40,8 +40,10 @@ void insertSort(std::vector<int> &nums) {
     for (int i = 1; i < nums.size(); ++i) {
         int j = i - 1, temp = nums[i];
         for (; j >= 0; --j) {
-            if (nums[j] > temp) nums[j + 1] = nums[j];
-            else break;
+            if (nums[j] > temp)
+                nums[j + 1] = nums[j];
+            else
+                break;
         }
         nums[j + 1] = temp;
     }
@@ -49,11 +51,14 @@ void insertSort(std::vector<int> &nums) {
 
 void binaryInsertSort(std::vector<int> &nums) {
     auto binarySearch = [&nums](int left, int right, int target) -> int {
-        while (left <= right) {                           // 此处的循环条件是 <=
-            int mid = left + (right - left) / 2;          // 是因为left和right是左闭右闭
-            if (nums[mid] < target) left = mid + 1;       // 要处理总长度为1的情况
-            else if (nums[mid] > target) right = mid - 1; // 也包括几轮二分后,剩余长度为1的情况
-            else return mid;
+        while (left <= right) {                   // 此处的循环条件是 <=
+            int mid = left + (right - left) / 2;  // 是因为left和right是左闭右闭
+            if (nums[mid] < target)
+                left = mid + 1;  // 要处理总长度为1的情况
+            else if (nums[mid] > target)
+                right = mid - 1;  // 也包括几轮二分后,剩余长度为1的情况
+            else
+                return mid;
         }
         return left;
     };
@@ -92,7 +97,8 @@ void heapSort(std::vector<int> &nums) {
             if (nums[start] < nums[i]) {
                 std::swap(nums[start], nums[i]);
                 start = i;
-            } else break;
+            } else
+                break;
         }
     };
     auto initHeap = [&nums, &adjustHeap]() -> void {
@@ -130,6 +136,15 @@ void quickSort(std::vector<int> &nums) {
 }
 
 std::vector<int> LeetcodeTask912::solve(const std::vector<int> &nums) const {
-    heapSort(const_cast<std::vector<int> &>(nums));
+    quickSort(const_cast<std::vector<int> &>(nums));
     return nums;
 }
+
+// bubbleSort        3560 ms  3555 ms  3628 ms
+// selectSort        2697 ms  2701 ms  2664 ms
+// insertSort        1215 ms  1233 ms  1246 ms
+// binaryInsertSort 952.8 ms 963.6 ms 985.7 ms
+// mergeSort        6.283 ms 6.423 ms  6.03 ms
+// heapSort         7.541 ms 7.482 ms 7.405 ms
+// quickSort         4.93 ms 4.579 ms 4.748 ms
+// std::sort        1.973 ms 1.963 ms 1.988 ms
