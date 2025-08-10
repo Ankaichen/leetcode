@@ -1,8 +1,10 @@
 #include "initialize.h"
 #include "tasks/task_impl/include/kamacoder_task46.h"
 #include "tasks/task_impl/include/leetcode_task1.h"
+#include "tasks/task_impl/include/leetcode_task5.h"
 #include "tasks/task_impl/include/leetcode_task1049.h"
 #include "tasks/task_impl/include/leetcode_task128.h"
+#include "tasks/task_impl/include/leetcode_task21.h"
 #include "tasks/task_impl/include/leetcode_task130.h"
 #include "tasks/task_impl/include/leetcode_task142.h"
 #include "tasks/task_impl/include/leetcode_task15.h"
@@ -48,8 +50,9 @@
 #include "tasks/task_impl/include/leetcode_task77.h"
 #include "tasks/task_impl/include/leetcode_task96.h"
 #include "tasks/task_impl/include/leetcode_task912.h"
+#include "tasks/task_impl/include/leetcode_task102.h"
 #include "tasks/task_impl/include/leetcode_task977.h"
 
-TASK_MAIN(LeetcodeTask912)
+TASK_MAIN(LeetcodeTask15)
 
 // TASK_MAIN(KamacoderTask46)

@@ -59,9 +59,6 @@
 #define TASK_DEFINITION_SHOULD_END
 
 #define CLEAR_STREAM(STREAM)       \
-    {                              \
-        std::ostringstream temp{}; \
-        std::swap(temp, STREAM);   \
-    }
+    { std::ostringstream temp{}; std::swap(temp, STREAM); }
 
 #endif  // TASK_DEFINITION_SHOULD_END

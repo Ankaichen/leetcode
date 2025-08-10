@@ -133,6 +133,20 @@ namespace Parse {
             return p;
         }
 
+        static TreeNode *parseTreeNode(const std::string &input) {
+            using ValType = decltype(std::declval<TreeNode>().val);
+            std::vector<ValType> vec = parseVector<std::vector<ValType>>(input);
+            auto createNode = [&vec] (auto &self, int root) -> TreeNode * {
+                if (root >= vec.size()) return nullptr;
+                int left = root * 2 + 1, right = left + 1;
+                TreeNode *leftNode = nullptr, *rightNode = nullptr;
+                if (left < vec.size() && vec[left] != INT32_MIN) leftNode = self(self, left);
+                if (right < vec.size() && vec[right] != INT32_MIN) rightNode = self(self, right);
+                return new TreeNode(vec[root], leftNode, rightNode);
+            };
+            return createNode(createNode, 0);
+        }
+
         template<typename T>
         static T parseSet(const std::string &input) {
             using result_type = TypeTraits::set_value_t<T>;
@@ -209,6 +223,12 @@ namespace Parse {
             return _detail::parseContainer<ParseType>(input);
         } else if constexpr (std::is_same_v<ParseType, ListNode *>) {
             return _detail::parseListNode(input);
+        } else if constexpr (std::is_same_v<ParseType, TreeNode *>) {
+            int start;
+            while ((start = input.find("null")) != std::string::npos) {
+                const_cast<std::string &>(input).replace(start, 4, "-2147483648");
+            }
+            return _detail::parseTreeNode(input);
         }
     }
 

@@ -28,6 +28,13 @@ namespace Delete {
             }
         }
 
+        static void deleteTreeNode(TreeNode *treeNode) {
+            if (!treeNode) return;
+            if (treeNode->left) deleteTreeNode(treeNode->left);
+            if (treeNode->right) deleteTreeNode(treeNode->right);
+            delete treeNode;
+        }
+
     }  // namespace _detail
 
     template<typename T>
@@ -38,6 +45,9 @@ namespace Delete {
         }
         if constexpr (std::is_same_v<DeleteType, ListNode *>) {
             _detail::deleteListNode(value);
+        }
+        if constexpr (std::is_same_v<DeleteType, TreeNode *>) {
+            _detail::deleteTreeNode(value);
         }
     }
 }  // namespace Delete
