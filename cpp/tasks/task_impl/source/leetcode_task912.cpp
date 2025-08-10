@@ -10,7 +10,7 @@
 
 #include "../include/leetcode_task912.h"
 
-void bubbleSort(std::vector<int> &nums) {
+static void bubbleSort(std::vector<int> &nums) {
     for (int i = 1; i < nums.size(); ++i) {
         bool flag = false;
         for (int j = 0; j < nums.size() - i; ++j) {
@@ -23,7 +23,7 @@ void bubbleSort(std::vector<int> &nums) {
     }
 }
 
-void selectSort(std::vector<int> &nums) {
+static void selectSort(std::vector<int> &nums) {
     for (int i = 0; i < nums.size(); ++i) {
         int min_v = nums[i], min_i = i;
         for (int j = i + 1; j < nums.size(); ++j) {
@@ -36,7 +36,7 @@ void selectSort(std::vector<int> &nums) {
     }
 }
 
-void insertSort(std::vector<int> &nums) {
+static void insertSort(std::vector<int> &nums) {
     for (int i = 1; i < nums.size(); ++i) {
         int j = i - 1, temp = nums[i];
         for (; j >= 0; --j) {
@@ -49,7 +49,7 @@ void insertSort(std::vector<int> &nums) {
     }
 }
 
-void binaryInsertSort(std::vector<int> &nums) {
+static void binaryInsertSort(std::vector<int> &nums) {
     auto binarySearch = [&nums](int left, int right, int target) -> int {
         while (left <= right) {                   // 此处的循环条件是 <=
             int mid = left + (right - left) / 2;  // 是因为left和right是左闭右闭
@@ -70,7 +70,7 @@ void binaryInsertSort(std::vector<int> &nums) {
     }
 }
 
-void mergeSort(std::vector<int> &nums) {
+static void mergeSort(std::vector<int> &nums) {
     std::vector<int> temp(nums.size(), 0);
     auto inner = [&nums, &temp](auto &self, int left, int right) -> void {
         if (left >= right) return;
@@ -90,7 +90,7 @@ void mergeSort(std::vector<int> &nums) {
     inner(inner, 0, nums.size() - 1);
 }
 
-void heapSort(std::vector<int> &nums) {
+static void heapSort(std::vector<int> &nums) {
     auto adjustHeap = [&nums](int start, int end) -> void {
         for (int i = start * 2 + 1; i < end; i = start * 2 + 1) {
             if (i + 1 < end && nums[i + 1] > nums[i]) ++i;
@@ -113,7 +113,7 @@ void heapSort(std::vector<int> &nums) {
     }
 }
 
-void quickSort(std::vector<int> &nums) {
+static void quickSort(std::vector<int> &nums) {
     auto partition = [&nums](int left, int right) -> int {
         std::swap(nums[left], nums[left + (right - left) / 2]);
         int pivot = nums[left];
