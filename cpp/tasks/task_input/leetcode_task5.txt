@@ -1,0 +1,6 @@
+s = "babad"         | "aba"
+s = "cbbd"          | "bb"
+s = "ccc"           | "ccc"
+s = "bananas"       | "anana"
+s = "ababababababa" | "ababababababa"
+s = "871yry17824ufhse9f8347hfoudf7829fj2873bfuufb3782jf9287fduofh74suyf782398fsyfg8237df7hn"  | "47hfoudf7829fj2873bfuufb3782jf9287fduofh74"
