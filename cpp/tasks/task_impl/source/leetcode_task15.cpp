@@ -24,7 +24,7 @@ static std::vector<std::vector<int>> threeSum1(const std::vector<int> &nums) {
         }
     }
     std::vector<std::vector<int>> resultVec;
-    for (auto &s1 : result) {
+    for (auto &s1: result) {
         resultVec.emplace_back(s1.begin(), s1.end());
     }
     return resultVec;
@@ -83,27 +83,6 @@ static std::vector<std::vector<int>> threeSum3(std::vector<int> &nums) {
     return result;
 }
 
-static std::vector<std::vector<int>> threeSum4(std::vector<int> &nums) {
-    std::vector<std::vector<int>> result{};
-    std::sort(nums.begin(), nums.end());
-    for (int i = 0; i < nums.size(); ++i) {
-        if (nums[i] > 0) break;
-        if (i >= 1 && nums[i] == nums[i - 1]) continue;
-        int left = i + 1, right = static_cast<int>(nums.size()) - 1;
-        while (left < right) {
-            int tempRes = nums[i] + nums[left] + nums[right];
-            if (tempRes > 0)
-                --right;
-            else if (tempRes < 0)
-                ++left;
-            else {
-                result.push_back({nums[i], nums[left], nums[right]});
-                for (++left; left < right && nums[left] == nums[left - 1]; ++left);
-                for (--right; left < right && nums[right] == nums[right + 1]; --right);
-            }
-        }
-    }
-    return result;
+std::vector<std::vector<int>> LeetcodeTask15::solve(const std::vector<int> &nums) const {
+    return threeSum3(const_cast<std::vector<int> &>(nums));
 }
-
-std::vector<std::vector<int>> LeetcodeTask15::solve(const std::vector<int> &nums) const { return threeSum4(const_cast<std::vector<int> &>(nums)); }
