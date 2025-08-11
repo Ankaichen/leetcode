@@ -10,15 +10,27 @@
 
 #include "../include/leetcode_task33.h"
 
-static int search2(std::vector<int>& nums, int target) {
+static int search3(std::vector<int>& nums, int target) {
+    // 通过判断顺序范围 每次可以排除一半数据
     int left = 0, right = nums.size() - 1;
     while (left <= right) {
         int mid = left + (right - left) / 2;
-        if (nums[mid] < target) {
-            right = mid + 1;
-        } else if ()
+        if (nums[mid] == target) return mid;
+        if (nums[left] <= nums[mid]) {                         // 左侧为顺序的
+            if (nums[left] <= target && target < nums[mid]) {  // 判断目标值是否在左侧
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        } else {                                                // 右侧是顺序的
+            if (nums[mid] < target && target <= nums[right]) {  // 判断目标值是否在右侧
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
     }
-    return binarySearch(0, nums.size() - 1);
+    return -1;
 }
 
 static int search2(std::vector<int>& nums, int target) {
@@ -62,4 +74,4 @@ static int search1(std::vector<int>& nums, int target) {
         return std::distance(nums.begin(), iter);
 }
 
-int LeetcodeTask33::solve(const std::vector<int>& nums, int target) const { return search2(const_cast<std::vector<int>&>(nums), target); }
+int LeetcodeTask33::solve(const std::vector<int>& nums, int target) const { return search3(const_cast<std::vector<int>&>(nums), target); }
