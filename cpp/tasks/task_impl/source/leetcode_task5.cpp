@@ -1,20 +1,19 @@
 /**
-  ******************************************************************************
-  * @file           : task5.cpp
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-8-9
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : task5.cpp
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-8-9
+ ******************************************************************************
+ */
 
 #include "../include/leetcode_task5.h"
 
-std::string longestPalindrome4(const std::string &s) { // 中心扩展算法
+std::string longestPalindrome4(const std::string &s) {  // 中心扩展算法
     auto expandAroundCenter = [&s](int left, int right) -> std::pair<int, int> {
         int target_left, target_right;
-        for (int i = 0; (target_left = left - i) >= 0 & (target_right = right + i) < s.size() &&
-                        s[target_left] == s[target_right]; ++i);
+        for (int i = 0; (target_left = left - i) >= 0 & (target_right = right + i) < s.size() && s[target_left] == s[target_right]; ++i);
         return std::make_pair(target_left + 1, target_right - 1);
     };
     int max_size = 0, left = 0;
@@ -34,7 +33,7 @@ std::string longestPalindrome4(const std::string &s) { // 中心扩展算法
     return s.substr(left, max_size);
 }
 
-std::string longestPalindrome3(const std::string &s) { // 动态规划 一维dp数组
+std::string longestPalindrome3(const std::string &s) {  // 动态规划 一维dp数组
     // 可将二维dp数组的动态规划 简化为一维dp数组
     // 由于dp[i][j]是由dp[i+1][j-1]计算得到的 因此可以不断覆盖dp数组
     // 此时需要j也是反序遍历 这样在计算dp[j]时 dp[j-1]还是上一次得到的值 没有被覆盖
@@ -58,7 +57,7 @@ std::string longestPalindrome3(const std::string &s) { // 动态规划 一维dp�
     return s.substr(left, max_size);
 }
 
-std::string longestPalindrome2(const std::string &s) { // 动态规划 二维dp数组
+std::string longestPalindrome2(const std::string &s) {  // 动态规划 二维dp数组
     // 子问题定义为 dp[i][j]表示子串s[i...j]是否为回文串
     // 当i==j时 长度为1是回文串 当j-i=1时 字符相同为回文串 else s[i+1...j-1]是回文串且s[i]==s[j] 是回文串
     // 因此使用动态规划 只能够替换暴力搜索时判断是否为回文串的部分 能够减少一层循环
@@ -83,12 +82,11 @@ std::string longestPalindrome2(const std::string &s) { // 动态规划 二维dp�
     return s.substr(left, max_size);
 }
 
-std::string longestPalindrome1(const std::string &s) { // 暴力搜索
+std::string longestPalindrome1(const std::string &s) {  // 暴力搜索
     auto isPalindrome = [&s](int left, int right) -> bool {
         int size = right - left + 1;
         for (int i = 0; i < size / 2; ++i) {
-            if (s[left + i] != s[right - i])
-                return false;
+            if (s[left + i] != s[right - i]) return false;
         }
         return true;
     };
@@ -104,6 +102,4 @@ std::string longestPalindrome1(const std::string &s) { // 暴力搜索
     return s.substr(left, max_size);
 }
 
-std::string LeetcodeTask5::solve(const std::string &s) const {
-    return longestPalindrome4(s);
-}
+std::string LeetcodeTask5::solve(const std::string &s) const { return longestPalindrome4(s); }
