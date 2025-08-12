@@ -92,7 +92,6 @@ private:
     std::vector<int> _sizes{};
 };
 
-template<typename T>
 class UnionFindIndex {
 public:
     UnionFindIndex() = default;
@@ -103,7 +102,7 @@ public:
         }
     }
 
-    void insert(const T &value) {
+    void insert(int value) {
         if (value < this->_dataParent.size()) return;
         std::size_t size = this->_dataParent.size();
         this->_dataParent.resize(value);
@@ -113,7 +112,7 @@ public:
         }
     }
 
-    void union_value(const T &v1, const T &v2) {
+    void union_value(int v1, int v2) {
         int index1 = this->find_root_index(v1), index2 = this->find_root_index(v2);
         if (index1 == index2 || index1 == -1 || index2 == -1) return;
         int size1 = this->_sizes[index1], size2 = this->_sizes[index2];
@@ -124,7 +123,7 @@ public:
         this->_sizes[index1] = size1 + size2;
     }
 
-    bool in_same_union(const T &v1, const T &v2) {
+    bool in_same_union(int v1, int v2) {
         int index1 = this->find_root_index(v1), index2 = this->find_root_index(v2);
         if (index1 == -1 || index2 == -1) {
             return false;
@@ -132,10 +131,10 @@ public:
         return index1 == index2;
     }
 
-    std::size_t union_size(const T &value) { return this->_sizes[this->find_root_index(value)]; }
+    std::size_t union_size(int value) { return this->_sizes[this->find_root_index(value)]; }
 
 private:
-    int find_root_index(const T &value) {
+    int find_root_index(int value) {
         if (value >= this->_dataParent.size()) return -1;
         std::size_t i = value;
         for (; this->_dataParent[i] != i; i = this->_dataParent[i]);
