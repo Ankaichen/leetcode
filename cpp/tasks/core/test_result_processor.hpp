@@ -11,9 +11,10 @@
 #ifndef LEETCODE_TEST_RESULT_PROCESSOR_HPP
 #define LEETCODE_TEST_RESULT_PROCESSOR_HPP
 
-#include "./utils.h"
-#include "./task_type_traits.hpp"
 #include <type_traits>
+
+#include "./task_type_traits.hpp"
+#include "./utils.h"
 
 template<typename InputRes, typename OutputRes>
 class TestResultProcessor {
@@ -46,8 +47,7 @@ public:
 };
 
 template<typename InputRes>
-NormalTestResultProcessor<InputRes>::CleanOutputType
-NormalTestResultProcessor<InputRes>::processResult(const CleanInputType &input) const {
+NormalTestResultProcessor<InputRes>::CleanOutputType NormalTestResultProcessor<InputRes>::processResult(const CleanInputType &input) const {
     return input;
 }
 
@@ -55,6 +55,7 @@ class ListNodeTestResultProcessor : public TestResultProcessor<ListNode *, ListN
 public:
     using typename TestResultProcessor<ListNode *, ListNode *>::CleanInputType;
     using typename TestResultProcessor<ListNode *, ListNode *>::CleanOutputType;
+
 public:
     ListNodeTestResultProcessor() = default;
 
@@ -63,10 +64,11 @@ public:
     [[nodiscard]] CleanOutputType processResult(const CleanInputType &input) const override;
 };
 
-template<TypeTraits::is_container_c InputRes>
+template<TypeTraits::is_container_c InputRes, int Depth>
 class UnorderedTestResultProcessor : public TestResultProcessor<InputRes, InputRes> {
     using typename TestResultProcessor<InputRes, InputRes>::CleanInputType;
     using typename TestResultProcessor<InputRes, InputRes>::CleanOutputType;
+
 public:
     UnorderedTestResultProcessor() = default;
 
@@ -76,32 +78,36 @@ public:
 
 private:
     template<typename T>
-    [[nodiscard]] inline std::remove_cvref_t<T> processItem(const T &input) const;
+    [[nodiscard]] inline std::remove_cvref_t<T> processItem(const T &input, int cur_depth = 0) const;
 };
 
-template<TypeTraits::is_container_c InputRes>
-UnorderedTestResultProcessor<InputRes>::CleanOutputType UnorderedTestResultProcessor<InputRes>::processResult(
-        const UnorderedTestResultProcessor::CleanInputType &input) const {
+template<TypeTraits::is_container_c InputRes, int Depth>
+UnorderedTestResultProcessor<InputRes, Depth>::CleanOutputType UnorderedTestResultProcessor<InputRes, Depth>::processResult(
+    const UnorderedTestResultProcessor::CleanInputType &input) const {
     return this->processItem(input);
 }
 
-template<TypeTraits::is_container_c InputRes>
+template<TypeTraits::is_container_c InputRes, int Depth>
 template<typename T>
-std::remove_cvref_t<T> UnorderedTestResultProcessor<InputRes>::processItem(const T &input) const {
+std::remove_cvref_t<T> UnorderedTestResultProcessor<InputRes, Depth>::processItem(const T &input, int cur_depth) const {
     if constexpr (TypeTraits::is_vector_v<T>) {
-        std::multiset<TypeTraits::vector_value_t<T>> resSet{};
-        for (auto v: input) {
-            resSet.insert(this->processItem(v));
+        if (Depth < 0 || cur_depth < Depth) {
+            std::multiset<TypeTraits::vector_value_t<T>> resSet{};
+            for (auto v : input) {
+                resSet.insert(this->processItem(v, cur_depth + 1));
+            }
+            return std::vector<TypeTraits::vector_value_t<T>>{resSet.begin(), resSet.end()};
+        } else {
+            return input;
         }
-        return std::vector<TypeTraits::vector_value_t<T>>{resSet.begin(), resSet.end()};
     } else {
         return input;
     }
 }
 
-class ACMTestResultProcessor : public TestResultProcessor<std::ostringstream&, std::ostringstream&> {
-    using typename TestResultProcessor<std::ostringstream&, std::ostringstream&>::CleanInputType;
-    using typename TestResultProcessor<std::ostringstream&, std::ostringstream&>::CleanOutputType;
+class ACMTestResultProcessor : public TestResultProcessor<std::ostringstream &, std::ostringstream &> {
+    using typename TestResultProcessor<std::ostringstream &, std::ostringstream &>::CleanInputType;
+    using typename TestResultProcessor<std::ostringstream &, std::ostringstream &>::CleanOutputType;
 
 public:
     ACMTestResultProcessor() = default;

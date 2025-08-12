@@ -24,7 +24,7 @@
 
 // using_NormalTestResultProcessor
 // using_ListNodeTestResultProcessor
-// using_UnorderedTestResultProcessor
+// using_UnorderedTestResultProcessor_i
 // using_ACMTestResultProcessor
 
 #ifdef using_NormalTestResultProcessor
@@ -34,7 +34,10 @@
 #define getProcessorType(RES) ListNodeTestResultProcessor
 #endif
 #ifdef using_UnorderedTestResultProcessor
-#define getProcessorType(RES) UnorderedTestResultProcessor<RES>
+#define getProcessorType(RES) UnorderedTestResultProcessor<RES, -1>
+#endif
+#ifdef using_UnorderedTestResultProcessor_1
+#define getProcessorType(RES) UnorderedTestResultProcessor<RES, 1>
 #endif
 #ifdef using_ACMTestResultProcessor
 #define getProcessorType(RES) ACMTestResultProcessor
@@ -59,6 +62,9 @@
 #define TASK_DEFINITION_SHOULD_END
 
 #define CLEAR_STREAM(STREAM)       \
-    { std::ostringstream temp{}; std::swap(temp, STREAM); }
+    {                              \
+        std::ostringstream temp{}; \
+        std::swap(temp, STREAM);   \
+    }
 
 #endif  // TASK_DEFINITION_SHOULD_END

@@ -14,9 +14,9 @@
 #include <algorithm>
 #include <cmath>
 #include <iterator>
+#include <sstream>
 #include <type_traits>
 #include <vector>
-#include <sstream>
 
 #include "../tasks/core/task_type_traits.hpp"
 #include "../tasks/core/utils.h"
@@ -56,7 +56,7 @@ namespace Compare {
         static bool compareStringStream(std::ostringstream &value1, std::ostringstream &value2) {
             std::string line1{}, line2{};
             std::istringstream value1_i{value1.str()}, value2_i{value2.str()};
-            while(std::getline(value1_i, line1) && std::getline(value2_i, line2)) {
+            while (std::getline(value1_i, line1) && std::getline(value2_i, line2)) {
                 if (line1 != line2) return false;
             }
             while (std::getline(value1_i, line1)) {
@@ -81,7 +81,7 @@ namespace Compare {
         } else if constexpr (std::is_same_v<CompareType, ListNode *>) {
             return _detail::compareListNode(value1, value2);
         } else if constexpr (std::is_same_v<CompareType, std::ostringstream>) {
-            return _detail::compareStringStream(const_cast<std::ostringstream&>(value1), const_cast<std::ostringstream&>(value2));
+            return _detail::compareStringStream(const_cast<std::ostringstream &>(value1), const_cast<std::ostringstream &>(value2));
         }
     }
 
