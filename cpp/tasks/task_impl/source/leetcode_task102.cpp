@@ -1,20 +1,20 @@
 /**
-  ******************************************************************************
-  * @file           : leetcode_task102.cpp
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-8-10
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : leetcode_task102.cpp
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-8-10
+ ******************************************************************************
+ */
 
 #include "../include/leetcode_task102.h"
 
-std::vector<std::vector<int>> levelOrder1(TreeNode* root) {
+static std::vector<std::vector<int>> levelOrder1(TreeNode* root) {
     if (!root) return {};
     std::vector<std::vector<int>> result;
     std::vector<int> level;
-    std::deque<TreeNode *> queue1{root}, queue2;
+    std::deque<TreeNode*> queue1{root}, queue2;
     while (!queue1.empty()) {
         level.push_back(queue1.front()->val);
         if (queue1.front()->left) queue2.push_back(queue1.front()->left);
@@ -28,6 +28,4 @@ std::vector<std::vector<int>> levelOrder1(TreeNode* root) {
     return result;
 }
 
-std::vector<std::vector<int>> LeetcodeTask102::solve(TreeNode* root) const {
-    return levelOrder1(root);
-}
+std::vector<std::vector<int>> LeetcodeTask102::solve(TreeNode* root) const { return levelOrder1(root); }
