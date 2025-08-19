@@ -12,6 +12,7 @@
 #define LEETCODE_PARSE_HPP
 
 #include <cassert>
+#include <deque>
 #include <ranges>
 #include <set>
 #include <sstream>
@@ -28,6 +29,9 @@ namespace Parse {
 
     template<typename T>
     static std::remove_cvref_t<T> parseType(const std::string &input);
+
+    template<typename T>
+    static std::string toString(const T &value);
 
     namespace _detail {
 
@@ -136,7 +140,7 @@ namespace Parse {
         static TreeNode *parseTreeNode(const std::string &input) {
             using ValType = decltype(std::declval<TreeNode>().val);
             std::vector<ValType> vec = parseVector<std::vector<ValType>>(input);
-            auto createNode = [&vec] (auto &self, int root) -> TreeNode * {
+            auto createNode = [&vec](auto &self, int root) -> TreeNode * {
                 if (root >= vec.size()) return nullptr;
                 int left = root * 2 + 1, right = left + 1;
                 TreeNode *leftNode = nullptr, *rightNode = nullptr;
@@ -202,6 +206,34 @@ namespace Parse {
                 return parseVector<ParseType>(input);
             } else if constexpr (TypeTraits::is_set_v<ParseType>) {
                 return parseSet<ParseType>(input);
+            }
+        }
+
+        template<typename T>
+        static std::string _detail_toString(const T &value) {
+            using ParseType = std::remove_cvref_t<T>;
+            if constexpr (TypeTraits::is_container_v<ParseType>) {
+                if constexpr (std::is_same_v<ParseType, std::string>) {
+                    return value;
+                }
+                std::string rng1 = "[", rng2 = "]";
+                if constexpr (TypeTraits::is_set_v<ParseType>) {
+                    rng1 = "{";
+                    rng2 = "}";
+                }
+                std::stringstream ss;
+                ss << rng1;
+                auto i = value.cbegin();
+                if (i != value.cend()) {
+                    ss << _detail_toString(*i);
+                    for (++i; i != value.cend(); ++i) {
+                        ss << "," << _detail_toString(*i);
+                    }
+                }
+                ss << rng2;
+                return ss.str();
+            } else {
+                return toString(value);
             }
         }
 
@@ -285,7 +317,36 @@ namespace Parse {
                 vec.push_back(p->val);
                 p = p->next;
             }
-            return toString(vec);
+            return _detail::_detail_toString(vec);
+        } else if constexpr (std::is_same_v<ParseType, TreeNode *>) {
+            using ValType = decltype(std::declval<TreeNode>().val);
+            std::vector<std::string> vec{(value != nullptr) ? _detail::_detail_toString(value->val) : "null"};
+            std::deque<TreeNode *> queue{value};
+            int enable_value_count = (value != nullptr) ? 1 : 0;
+            while (!queue.empty() && enable_value_count > 0) {
+                TreeNode *node = queue.front();
+                if (node) {
+                    vec.push_back(_detail::_detail_toString(node->val));
+                    --enable_value_count;
+                    queue.push_back(node->left);
+                    queue.push_back(node->right);
+                    if (node->left) ++enable_value_count;
+                    if (node->right) ++enable_value_count;
+                } else {
+                    vec.push_back("null");
+                    queue.push_back(nullptr);
+                    queue.push_back(nullptr);
+                }
+                queue.pop_front();
+            }
+            int tail_count = 0;
+            for (const auto &s : vec) {
+                if (s != "null") break;
+                ++tail_count;
+            }
+            std::cout << "toString: " << toString(vec) << std::endl;
+            std::cout << "_detail::_detail_toString: " << _detail::_detail_toString(vec) << std::endl;
+            return _detail::_detail_toString(std::vector<std::string>(std::move_iterator(vec.begin()), std::move_iterator(vec.end() - tail_count)));
         } else if constexpr (std::is_same_v<ParseType, std::ostringstream>) {
             return value.str();
         }
