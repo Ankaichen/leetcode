@@ -102,7 +102,6 @@ bool LeetCodeTestCaseReader<Res(Args...)>::getNextTestCase(TestCaseCallBack call
             formatInputOutputString(input, output);
             stringCallback(input, output);
         }
-
         if (callback != nullptr) this->parseArgsAndSolve(input, output, std::index_sequence_for<Args...>{}, callback);
         return true;
     }

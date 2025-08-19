@@ -51,18 +51,28 @@ NormalTestResultProcessor<InputRes>::CleanOutputType NormalTestResultProcessor<I
     return input;
 }
 
-class ListNodeTestResultProcessor : public TestResultProcessor<ListNode *, ListNode *> {
+template<typename Pointer>
+class PointerTestResultProcessor : public TestResultProcessor<Pointer, Pointer> {
 public:
-    using typename TestResultProcessor<ListNode *, ListNode *>::CleanInputType;
-    using typename TestResultProcessor<ListNode *, ListNode *>::CleanOutputType;
+    using typename TestResultProcessor<Pointer, Pointer>::CleanInputType;
+    using typename TestResultProcessor<Pointer, Pointer>::CleanOutputType;
+    static_assert(std::is_pointer_v<CleanInputType>);
 
 public:
-    ListNodeTestResultProcessor() = default;
+    PointerTestResultProcessor() = default;
 
-    ~ListNodeTestResultProcessor() noexcept override = default;
+    ~PointerTestResultProcessor() noexcept override = default;
 
     [[nodiscard]] CleanOutputType processResult(const CleanInputType &input) const override;
 };
+
+template<typename Pointer>
+PointerTestResultProcessor<Pointer>::CleanOutputType PointerTestResultProcessor<Pointer>::processResult(
+    const PointerTestResultProcessor<Pointer>::CleanInputType &input) const {
+    CleanOutputType output = input;
+    const_cast<CleanInputType &>(input) = nullptr;
+    return output;
+}
 
 template<TypeTraits::is_container_c InputRes, int Depth>
 class UnorderedTestResultProcessor : public TestResultProcessor<InputRes, InputRes> {

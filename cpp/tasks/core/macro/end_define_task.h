@@ -16,6 +16,7 @@
 
 #undef using_NormalTestResultProcessor
 #undef using_ListNodeTestResultProcessor
+#undef using_TreeNodeTestResultProcessor
 #undef using_UnorderedTestResultProcessor
 #undef using_UnorderedTestResultProcessor_1
 #undef using_ACMTestResultProcessor

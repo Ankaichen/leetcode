@@ -125,11 +125,4 @@ bool ACMTestCaseReader::getNextTestCase(TestCaseReader<std::ostringstream &(std:
     return !this->_fileStream.eof();
 }
 
-ListNodeTestResultProcessor::CleanOutputType ListNodeTestResultProcessor::processResult(
-    const ListNodeTestResultProcessor::CleanInputType &input) const {
-    CleanOutputType output = input;
-    const_cast<CleanInputType &>(input) = nullptr;
-    return output;
-}
-
 ACMTestResultProcessor::CleanOutputType ACMTestResultProcessor::processResult(CleanInputType &input) const { return input; }

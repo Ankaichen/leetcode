@@ -24,6 +24,7 @@
 
 // using_NormalTestResultProcessor
 // using_ListNodeTestResultProcessor
+// using_TreeNodeTestResultProcessor
 // using_UnorderedTestResultProcessor_i
 // using_ACMTestResultProcessor
 
@@ -31,7 +32,10 @@
 #define getProcessorType(RES) NormalTestResultProcessor<RES>
 #endif
 #ifdef using_ListNodeTestResultProcessor
-#define getProcessorType(RES) ListNodeTestResultProcessor
+#define getProcessorType(RES) PointerTestResultProcessor<RES>
+#endif
+#ifdef using_TreeNodeTestResultProcessor
+#define getProcessorType(RES) PointerTestResultProcessor<RES>
 #endif
 #ifdef using_UnorderedTestResultProcessor
 #define getProcessorType(RES) UnorderedTestResultProcessor<RES, -1>
