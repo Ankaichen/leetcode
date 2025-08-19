@@ -31,6 +31,12 @@ static int fib2(int n) {
     return dp_2;
 }
 
+static int fib3(int n) {
+    if (n == 0) return 0;
+    if (n == 1) return 1;
+    return fib3(n - 1) + fib3(n - 2);
+}
+
 int LeetcodeTask509::solve(int n) const {
     return fib2(n);
 }
