@@ -53,6 +53,13 @@ namespace Compare {
             return (value1 == nullptr) && (value2 == nullptr);
         }
 
+        static bool compareTreeNode(TreeNode *value1, TreeNode *value2) {
+            if ((value1 == nullptr && value2 != nullptr) || (value1 != nullptr && value2 == nullptr)) return false;
+            if (value1 == nullptr && value2 == nullptr) return true;
+            if (value1->val != value2->val) return false;
+            return compareTreeNode(value1->left, value2->left) && compareTreeNode(value1->right, value2->right);
+        }
+
         static bool compareStringStream(std::ostringstream &value1, std::ostringstream &value2) {
             std::string line1{}, line2{};
             std::istringstream value1_i{value1.str()}, value2_i{value2.str()};
@@ -80,6 +87,8 @@ namespace Compare {
             return _detail::compareContainer(value1, value2);
         } else if constexpr (std::is_same_v<CompareType, ListNode *>) {
             return _detail::compareListNode(value1, value2);
+        } else if constexpr (std::is_same_v<CompareType, TreeNode *>) {
+            return _detail::compareTreeNode(value1, value2);
         } else if constexpr (std::is_same_v<CompareType, std::ostringstream>) {
             return _detail::compareStringStream(const_cast<std::ostringstream &>(value1), const_cast<std::ostringstream &>(value2));
         }
