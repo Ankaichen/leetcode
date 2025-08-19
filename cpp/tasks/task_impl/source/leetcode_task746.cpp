@@ -55,6 +55,10 @@ static int minCostClimbingStairs3(const std::vector<int> &cost) {
     return dp_2;
 }
 
+static int minCostClimbingStairs4(const std::vector<int> &cost) {
+
+}
+
 int LeetcodeTask746::solve(const std::vector<int> &cost) const {
-    return minCostClimbingStairs3(cost);
+    return minCostClimbingStairs4(cost);
 }
