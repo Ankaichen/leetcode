@@ -10,20 +10,15 @@
 
 #include "../include/leetcode_task70.h"
 
-static int count;
-
-static void backtracking(int n) {
-    if (n == 0) {
-        ++count;
-        return;
-    }
-    if (n - 1 >= 0) backtracking(n - 1);
-    if (n - 2 >= 0) backtracking(n - 2);
-}
-
 static int climbStairs1(int n) {
-    count = 0;
-    backtracking(n);
+    int count = 0;
+    auto backtracking = [&count, n] (auto &self, int cur) -> void {
+        if (cur == n) ++count;
+        if (cur >= n) return;
+        self(self, cur + 1);
+        self(self, cur + 2);
+    };
+    backtracking(backtracking, 0);
     return count;
 }
 
