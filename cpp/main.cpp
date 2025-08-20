@@ -54,7 +54,8 @@
 #include "tasks/task_impl/include/leetcode_task746.h"
 #include "tasks/task_impl/include/leetcode_task77.h"
 #include "tasks/task_impl/include/leetcode_task912.h"
+#include "tasks/task_impl/include/leetcode_task92.h"
 #include "tasks/task_impl/include/leetcode_task96.h"
 #include "tasks/task_impl/include/leetcode_task977.h"
 
-TASK_MAIN(LeetcodeTask236)
+TASK_MAIN(KamacoderTask46)
