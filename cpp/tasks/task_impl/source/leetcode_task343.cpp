@@ -1,46 +1,54 @@
 /**
-  ******************************************************************************
-  * @file           : leetcode_task343.cpp
-  * @author         : An Kaichen
-  * @brief          : None
-  * @attention      : None
-  * @date           : 25-6-19
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : leetcode_task343.cpp
+ * @author         : An Kaichen
+ * @brief          : None
+ * @attention      : None
+ * @date           : 25-6-19
+ ******************************************************************************
+ */
 
 #include "../include/leetcode_task343.h"
 
-static void backtracking(int n, int times, int &result) {
-    if (n == 0)
-        result = std::max(result, times);
-    for (int i = 1; i <= n; ++i) {
-        backtracking(n - i, times * i, result);
-    }
-}
-
 static int integerBreak1(int n) {
+    // 回溯法
     int result = 0;
+    auto backtracking = [n, &result](auto &self, int cur_sum, int cur_res, int cur) -> void {
+        if (cur_sum == n) result = std::max(result, cur_res);
+        if (cur_sum >= n) return;
+        for (int i = cur; i <= n - cur_sum; ++i) {
+            self(self, cur_sum + i, cur_res * i, i);
+        }
+    };
     for (int i = 1; i < n; ++i) {
-        backtracking(n - i, i, result);
+        backtracking(backtracking, i, i, i);
     }
     return result;
 }
 
 static int integerBreak2(int n) {
-    std::vector<int> dp(n + 1, 0);
-    dp[1] = 1;
+    // 动态规划 dp[i]表示n=i时的输出结果 每次通过比较之前所有的dp值 计算当前dp值
+    std::vector<int> dp(n + 1, 1);
     for (int i = 2; i <= n; ++i) {
-        int maxj = dp[i - 1];
-        for (int j = 1; j < i; ++j) {
-            int i1 = std::max(dp[j], j);
-            int i2 = std::max(dp[i - j], i - j);
-            maxj = std::max(maxj, i1 * i2);
+        dp[i] = 0;
+        for (int j = i - 1; j >= 1; --j) {
+            dp[i] = std::max(std::max(dp[j] * (i - j), j * (i - j)), dp[i]);
         }
-        dp[i] = maxj;
     }
     return dp[n];
 }
 
-int LeetcodeTask343::solve(int n) const {
-    return integerBreak1(n);
+static int integerBreak3(int n) {
+    // 通过static保留每次计算结果 多个用例只需计算一次
+    static std::vector<int> dp(59, 1);
+    static int i = 2;
+    for (; i <= n; ++i) {
+        dp[i] = 0;
+        for (int j = i - 1; j >= 1; --j) {
+            dp[i] = std::max(std::max(dp[j] * (i - j), j * (i - j)), dp[i]);
+        }
+    }
+    return dp[n];
 }
+
+int LeetcodeTask343::solve(int n) const { return integerBreak3(n); }
