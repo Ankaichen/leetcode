@@ -58,4 +58,4 @@
 #include "tasks/task_impl/include/leetcode_task96.h"
 #include "tasks/task_impl/include/leetcode_task977.h"
 
-TASK_MAIN(KamacoderTask46)
+TASK_MAIN(LeetcodeTask416)
