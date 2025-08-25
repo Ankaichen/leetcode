@@ -10,30 +10,45 @@
 
 #include "../include/leetcode_task416.h"
 
-#include <numeric>
-
 static bool canPartition1(const std::vector<int> &nums) {
-    if (nums.size() <= 1) return false;
-    int sum = 0;
-    for (int i : nums) sum += i;
-    if (sum % 2 == 1) return false;
-    int n = sum / 2;
-    std::vector<std::vector<int>> dp(nums.size() + 1, std::vector<int>(n + 1, 0));
+    // 动态规划 首先计算nums总和 然后使用01背包思路 求解能否满足nums_sum / 2
+    int nums_sum = 0, nums_sum_half;
+    nums_sum = std::accumulate(nums.begin(), nums.end(), nums_sum);
+    if (nums_sum % 2 != 0) return false;
+    nums_sum_half = nums_sum / 2;
+    std::vector<std::vector<int>> dp(nums.size() + 1, std::vector<int>(nums_sum + 1, 0));
     for (int i = 1; i <= nums.size(); ++i) {
-        for (int j = 1; j <= n; ++j) {
+        for (int j = 1; j <= nums_sum; ++j) {
             dp[i][j] = dp[i - 1][j];
-            if (j >= nums[i - 1]) {
+            if (nums[i - 1] <= j) {
                 dp[i][j] = std::max(dp[i][j], dp[i - 1][j - nums[i - 1]] + nums[i - 1]);
             }
-            if (dp[i][j] == n) {
-                return true;
-            }
+            if (dp[i][j] == nums_sum_half) return true;
         }
     }
     return false;
 }
 
 static bool canPartition2(const std::vector<int> &nums) {
+    // 动态规划 一维dp数组
+    int nums_sum = 0, nums_sum_half;
+    nums_sum = std::accumulate(nums.begin(), nums.end(), nums_sum);
+    if (nums_sum % 2 != 0) return false;
+    nums_sum_half = nums_sum / 2;
+    std::vector<int> dp(nums_sum + 1, 0);
+    for (int i = 1; i <= nums.size(); ++i) {
+        for (int j = nums_sum; j >= 1; --j) {
+            if (nums[i - 1] <= j) {
+                dp[j] = std::max(dp[j], dp[j - nums[i - 1]] + nums[i - 1]);
+            }
+            if (dp[j] == nums_sum_half) return true;
+        }
+    }
+    return false;
+}
+
+static bool canPartition3(const std::vector<int> &nums) {
+    // 回溯法
     int result = false;
     int nums_sum = 0;
     nums_sum = std::accumulate(nums.begin(), nums.end(), nums_sum);
