@@ -8,6 +8,7 @@
 #include "tasks/task_impl/include/leetcode_task142.h"
 #include "tasks/task_impl/include/leetcode_task15.h"
 #include "tasks/task_impl/include/leetcode_task151.h"
+#include "tasks/task_impl/include/leetcode_task1610.h"
 #include "tasks/task_impl/include/leetcode_task17.h"
 #include "tasks/task_impl/include/leetcode_task18.h"
 #include "tasks/task_impl/include/leetcode_task19.h"
@@ -59,4 +60,4 @@
 #include "tasks/task_impl/include/leetcode_task96.h"
 #include "tasks/task_impl/include/leetcode_task977.h"
 
-TASK_MAIN(LeetcodeTask494)
+TASK_MAIN(LeetcodeTask1610)
