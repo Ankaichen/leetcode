@@ -2,9 +2,11 @@
 #include "tasks/task_impl/include/kamacoder_task46.h"
 #include "tasks/task_impl/include/leetcode_task1.h"
 #include "tasks/task_impl/include/leetcode_task102.h"
+#include "tasks/task_impl/include/leetcode_task103.h"
 #include "tasks/task_impl/include/leetcode_task1049.h"
 #include "tasks/task_impl/include/leetcode_task128.h"
 #include "tasks/task_impl/include/leetcode_task130.h"
+#include "tasks/task_impl/include/leetcode_task141.h"
 #include "tasks/task_impl/include/leetcode_task142.h"
 #include "tasks/task_impl/include/leetcode_task15.h"
 #include "tasks/task_impl/include/leetcode_task151.h"
@@ -61,4 +63,4 @@
 #include "tasks/task_impl/include/leetcode_task96.h"
 #include "tasks/task_impl/include/leetcode_task977.h"
 
-TASK_MAIN(LeetcodeTask474)
+TASK_MAIN(LeetcodeTask142)
