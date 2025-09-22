@@ -37,4 +37,31 @@ static std::vector<std::vector<int>> zigzagLevelOrder1(TreeNode* root) {
     return result;
 }
 
-std::vector<std::vector<int>> LeetcodeTask103::solve(TreeNode* root) const { return zigzagLevelOrder1(root); }
+static std::vector<std::vector<int>> zigzagLevelOrder2(TreeNode* root) {
+    if (!root) return {};
+    std::vector<std::vector<int>> result;
+    std::vector<int> line;
+    std::stack<TreeNode*> stack1, stack2;  // 此次应该使用stack 因为无论顺序还是逆序遍历 都需要将子树逆序
+    stack1.push(root);
+    bool flag = true;
+    while (!stack1.empty()) {
+        TreeNode* cur = stack1.top();
+        line.push_back(cur->val);
+        stack1.pop();
+        if (flag) {  // 需要区别的是左右子树的顺序
+            if (cur->left) stack2.push(cur->left);
+            if (cur->right) stack2.push(cur->right);
+        } else {
+            if (cur->right) stack2.push(cur->right);
+            if (cur->left) stack2.push(cur->left);
+        }
+        if (stack1.empty()) {
+            flag = !flag;
+            result.emplace_back(std::move(line));
+            std::swap(stack1, stack2);
+        }
+    }
+    return result;
+}
+
+std::vector<std::vector<int>> LeetcodeTask103::solve(TreeNode* root) const { return zigzagLevelOrder2(root); }
