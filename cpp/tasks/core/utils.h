@@ -12,6 +12,7 @@
 #define LEETCODE_CORE_UTILS_H
 
 #include <cmath>
+#include <list>
 #include <memory>
 #include <numeric>
 #include <unordered_map>
